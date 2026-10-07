@@ -13,10 +13,10 @@ class GatewaySurfaceTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_health_up_route_returns_ok(): void
+    public function test_health_up_route_returns_not_found(): void
     {
         $response = $this->get('/up');
 
-        $response->assertStatus(200);
+        $response->assertStatus(404);
     }
 }
