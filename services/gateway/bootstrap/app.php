@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->append(RequestIdMiddleware::class);
+        $middleware->prepend(RequestIdMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
