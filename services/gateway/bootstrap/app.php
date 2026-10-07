@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Middleware\RequestIdMiddleware;
+use App\Http\Responses\ProblemDetailsResponse;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,5 +23,23 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(RequestIdMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            return ProblemDetailsResponse::make(
+                request: $request,
+                status: 404,
+                title: 'Not Found',
+                detail: 'The requested resource was not found.',
+                code: 'RESOURCE_NOT_FOUND',
+            );
+        });
+
+        $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
+            return ProblemDetailsResponse::make(
+                request: $request,
+                status: 405,
+                title: 'Method Not Allowed',
+                detail: 'The requested method is not allowed for this resource.',
+                code: 'METHOD_NOT_ALLOWED',
+            );
+        });
     })->create();
