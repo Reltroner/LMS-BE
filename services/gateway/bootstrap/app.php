@@ -42,4 +42,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 code: 'METHOD_NOT_ALLOWED',
             );
         });
+
+        $exceptions->render(function (Throwable $e, Request $request) {
+            return ProblemDetailsResponse::make(
+                request: $request,
+                status: 500,
+                title: 'Internal Server Error',
+                detail: 'An unexpected error occurred.',
+                code: 'INTERNAL_SERVER_ERROR',
+            );
+        });
     })->create();
