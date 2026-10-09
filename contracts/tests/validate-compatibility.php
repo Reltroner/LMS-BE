@@ -23,10 +23,24 @@ $wrongCaps=$caps;array_shift($wrongCaps);
 t(!compatible($g,$realRoutes,$wrongCaps,$events),'B3-AC21 missing capability rejected');
 $wrongEvents=$events;$wrongEvents[0]='learning.enrollment.deleted';
 t(!compatible($g,$realRoutes,$caps,$wrongEvents),'B3-AC21 unapproved event rejected');
-function deny(string $case):bool{
- return in_array($case,['C05','C06','C07','C08','C09','C15'],true);
+function denyByPolicy(array $policy,string $operation,?string $client,?string $capability,?string $owner,?string $requestedOwner,bool $delegationSigned=true,bool $aclAllowed=true):bool {
+    if($client===null||$delegationSigned===false)return true;
+    $entry=null;foreach($policy['ops'] as $one)if($one['id']===$operation)$entry=$one;
+    if($entry===null)return true;
+    if(!in_array($client,['lms-user','lms-admin'],true))return true;
+    if(in_array($entry['client'],['lms-user','lms-admin'],true)&&$client!==$entry['client'])return true;
+    if($entry['capability']!==null&&$capability!==$entry['capability'])return true;
+    if($entry['actor_binding']==='SIGNED_SUB_AND_RESOURCE_OWNER'&&$owner!==$requestedOwner)return true;
+    if($operation==='API-17'&&!$aclAllowed)return true;
+    return false;
 }
-foreach(['C05','C06','C07','C08','C09','C15'] as $case)t(deny($case),'B3-AC22 '.$case.' negative deny model');
+t(denyByPolicy($policy,'API-19','lms-user','admin.principal.read','alice','alice'),'B3-AC22 C05 wrong admin client denied');
+t(denyByPolicy($policy,'API-04','lms-user','learning.enrollment.read.self','alice','bob'),'B3-AC22 C06 cross-owner denied');
+t(denyByPolicy($policy,'API-10',null,null,null,null),'B3-AC22 C07 guest offering denied');
+t(denyByPolicy($policy,'API-18',null,null,null,null),'B3-AC22 C08 guest AI denied');
+t(denyByPolicy($policy,'API-17','lms-user','knowledge.search','alice','alice',true,false),'B3-AC22 C09 private Knowledge snippet denied');
+t(denyByPolicy($policy,'API-02','lms-user','learning.enrollment.read.self','alice','alice',false),'B3-AC22 C15 unsigned delegation denied');
+t(!denyByPolicy($policy,'API-02','lms-user','learning.enrollment.read.self','alice','alice'),'B3-AC22 legitimate read allowed');
 function eventDecision(bool $receiptPresent,int $version,int $checkpoint):string{
  if($receiptPresent)return 'SKIP_REPLAY';
  if($version<$checkpoint)return 'REJECT_OUT_OF_ORDER';
