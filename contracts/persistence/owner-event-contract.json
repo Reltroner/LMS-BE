@@ -1,0 +1,737 @@
+{
+  "schema_version": 1,
+  "phase": "3B-03",
+  "authority": "FZ10_FZ11_DESIGN_ONLY",
+  "databases": [
+    {
+      "id": "learning",
+      "name": "lms_learning_db",
+      "owner": "learning",
+      "tables": [
+        "enrollments",
+        "lesson_progress",
+        "bookmarks",
+        "course_completions",
+        "outbox_messages",
+        "inbox_receipts"
+      ],
+      "constraints": [
+        "unique principal_sub+course_id+curriculum_revision enrollment candidate",
+        "progress course_revision pin",
+        "outbox row same transaction as domain aggregate"
+      ],
+      "application_grants": {
+        "service_role": "lms_learning_writer",
+        "write_db": "lms_learning_db",
+        "read_db": "lms_learning_db",
+        "other_lms_db_access": "DENY_SELECT_INSERT_UPDATE_DELETE",
+        "migration_role": "lms_learning_migrator_NONPROD_CANDIDATE_ONLY"
+      },
+      "migration_status": "SCHEMA_CANDIDATE_NOT_APPLIED",
+      "transaction_scope": "LOCAL_POSTGRES_ONLY"
+    },
+    {
+      "id": "mentorship",
+      "name": "lms_mentorship_db",
+      "owner": "mentorship",
+      "tables": [
+        "offerings",
+        "availability_slots",
+        "bookings",
+        "session_records",
+        "booking_idempotency",
+        "outbox_messages",
+        "inbox_receipts"
+      ],
+      "constraints": [
+        "unique active slot occupancy via transaction/partial index",
+        "booking_idempotency unique caller+key with request fingerprint and retained response",
+        "booking cancellation is lifecycle not destructive deletion"
+      ],
+      "application_grants": {
+        "service_role": "lms_mentorship_writer",
+        "write_db": "lms_mentorship_db",
+        "read_db": "lms_mentorship_db",
+        "other_lms_db_access": "DENY_SELECT_INSERT_UPDATE_DELETE",
+        "migration_role": "lms_mentorship_migrator_NONPROD_CANDIDATE_ONLY"
+      },
+      "migration_status": "SCHEMA_CANDIDATE_NOT_APPLIED",
+      "transaction_scope": "LOCAL_POSTGRES_ONLY"
+    },
+    {
+      "id": "knowledge",
+      "name": "lms_knowledge_db",
+      "owner": "knowledge",
+      "tables": [
+        "ingestion_releases",
+        "source_provenance",
+        "search_documents",
+        "search_index_checkpoints",
+        "inbox_receipts",
+        "outbox_messages"
+      ],
+      "constraints": [
+        "release immutable hash+published rights attestation",
+        "deny unapproved source release",
+        "index rebuild rollback and ACL revisions"
+      ],
+      "application_grants": {
+        "service_role": "lms_knowledge_writer",
+        "write_db": "lms_knowledge_db",
+        "read_db": "lms_knowledge_db",
+        "other_lms_db_access": "DENY_SELECT_INSERT_UPDATE_DELETE",
+        "migration_role": "lms_knowledge_migrator_NONPROD_CANDIDATE_ONLY"
+      },
+      "migration_status": "SCHEMA_CANDIDATE_NOT_APPLIED",
+      "transaction_scope": "LOCAL_POSTGRES_ONLY"
+    },
+    {
+      "id": "audit",
+      "name": "lms_audit_db",
+      "owner": "audit",
+      "tables": [
+        "immutable_audit_events",
+        "privileged_mutation_intents",
+        "reconciliation_status",
+        "inbox_receipts",
+        "outbox_messages"
+      ],
+      "constraints": [
+        "append-only audit event rows; update restricted to reconcile projections",
+        "Keycloak identity updates separate from Audit DB transaction",
+        "event idempotency/source attribution"
+      ],
+      "application_grants": {
+        "service_role": "lms_audit_writer",
+        "write_db": "lms_audit_db",
+        "read_db": "lms_audit_db",
+        "other_lms_db_access": "DENY_SELECT_INSERT_UPDATE_DELETE",
+        "migration_role": "lms_audit_migrator_NONPROD_CANDIDATE_ONLY"
+      },
+      "migration_status": "SCHEMA_CANDIDATE_NOT_APPLIED",
+      "transaction_scope": "LOCAL_POSTGRES_ONLY"
+    }
+  ],
+  "events": [
+    {
+      "name": "learning.enrollment.created",
+      "owner": "learning",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "learning.enrollment.created"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "learning"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "enrollment_id",
+              "principal_sub"
+            ],
+            "properties": {
+              "enrollment_id": {
+                "type": "string"
+              },
+              "principal_sub": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "learning.progress.updated",
+      "owner": "learning",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "learning.progress.updated"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "learning"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "enrollment_id",
+              "principal_sub"
+            ],
+            "properties": {
+              "enrollment_id": {
+                "type": "string"
+              },
+              "principal_sub": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "learning.course.completed",
+      "owner": "learning",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "learning.course.completed"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "learning"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "course_id",
+              "principal_sub"
+            ],
+            "properties": {
+              "course_id": {
+                "type": "string"
+              },
+              "principal_sub": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "mentorship.booking.created",
+      "owner": "mentorship",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "mentorship.booking.created"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "mentorship"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "booking_id",
+              "principal_sub"
+            ],
+            "properties": {
+              "booking_id": {
+                "type": "string"
+              },
+              "principal_sub": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "mentorship.booking.cancelled",
+      "owner": "mentorship",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "mentorship.booking.cancelled"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "mentorship"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "booking_id",
+              "principal_sub"
+            ],
+            "properties": {
+              "booking_id": {
+                "type": "string"
+              },
+              "principal_sub": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "mentorship.session.completed",
+      "owner": "mentorship",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "mentorship.session.completed"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "mentorship"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "session_id",
+              "principal_sub"
+            ],
+            "properties": {
+              "session_id": {
+                "type": "string"
+              },
+              "principal_sub": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "identity.role.changed",
+      "owner": "audit",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "identity.role.changed"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "audit"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "principal_sub",
+              "intent_id"
+            ],
+            "properties": {
+              "principal_sub": {
+                "type": "string"
+              },
+              "intent_id": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "knowledge.index.requested",
+      "owner": "knowledge",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "knowledge.index.requested"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "knowledge"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "release_id",
+              "source_hash"
+            ],
+            "properties": {
+              "release_id": {
+                "type": "string"
+              },
+              "source_hash": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    },
+    {
+      "name": "knowledge.index.completed",
+      "owner": "knowledge",
+      "version": 1,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "event_version",
+          "occurred_at",
+          "source_service",
+          "request_id",
+          "aggregate_id",
+          "payload"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "const": "knowledge.index.completed"
+          },
+          "event_version": {
+            "const": 1
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_service": {
+            "const": "knowledge"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggregate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "release_id",
+              "index_hash"
+            ],
+            "properties": {
+              "release_id": {
+                "type": "string"
+              },
+              "index_hash": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "payload_minimization": "NO email, access tokens, full lesson text, PII documents or credential data",
+      "status": "SCHEMA_CANDIDATE"
+    }
+  ],
+  "outbox_inbox": {
+    "outbox": {
+      "required": "domain write and event outbox INSERT within same owner DB transaction",
+      "publication": "async at-least-once after commit; delivery via Redis 8 transient",
+      "retry": "bounded exponential backoff, retry budget and dead-letter incident policy pending measured ADR",
+      "crash_consistency": "if crash occurs after local commit before broker publish, persisted outbox is replayable"
+    },
+    "inbox": {
+      "deduplication_key": "source_service + event_id + event_version",
+      "commit": "consumer side effects and inbox receipt in one local owned DB transaction",
+      "reorder": "aggregate version/monotonic checkpoint or deliberate compensating path; never silent regress"
+    },
+    "no_distributed_transaction": true,
+    "no_redis_only_correctness": true
+  },
+  "booking": {
+    "slot_occupancy": "database transaction and unique constraint independent of transport/idempotency",
+    "idempotency": "durable key scope+fingerprint+result retained, key collision mismatched payload -> 409",
+    "replay": "repeated same key+payload returns stable prior result and does not reserve twice",
+    "temporal_columns": "TZ/precision candidate pending provider acceptance"
+  },
+  "admin_role": {
+    "intent": "Audit service records durable requested mutation before external Keycloak adapter action",
+    "adapter": "Keycloak is sole role authority; no direct LMS identity DB",
+    "reconcile": [
+      "INTENT_RECORDED",
+      "KEYCLOAK_APPLIED",
+      "AUDIT_CONFIRMED",
+      "FAILED_RETRYABLE",
+      "ESCALATE_MANUAL"
+    ],
+    "outcome": "nonatomic cross-system; explicit idempotent retry, never claim atomic Keycloak+DB",
+    "phase4_gate": "requires signed protocol and live failure tests before role PATCH"
+  },
+  "prohibited": [
+    "cross-service DB connections",
+    "cross-DB writes",
+    "global two-phase commit",
+    "Redis only loss-prone correctness",
+    "production migration from this artifact",
+    "seventh owner database",
+    "immutable audit log updates"
+  ],
+  "implementation_status": "CONTRACTS_AND_NEGATIVE_MODEL_ONLY"
+}

@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "owner_grant_cases": [
+    {
+      "id": "D01",
+      "case": "learning read mentorship DB",
+      "caller": "learning",
+      "database": "mentorship",
+      "action": "select",
+      "expected": "DENY"
+    },
+    {
+      "id": "D02",
+      "case": "mentorship write audit DB",
+      "caller": "mentorship",
+      "database": "audit",
+      "action": "insert",
+      "expected": "DENY"
+    },
+    {
+      "id": "D03",
+      "case": "knowledge alter learning DB",
+      "caller": "knowledge",
+      "database": "learning",
+      "action": "update",
+      "expected": "DENY"
+    },
+    {
+      "id": "D04",
+      "case": "audit write learning DB",
+      "caller": "audit",
+      "database": "learning",
+      "action": "insert",
+      "expected": "DENY"
+    },
+    {
+      "id": "D05",
+      "case": "learning own DB",
+      "caller": "learning",
+      "database": "learning",
+      "action": "insert",
+      "expected": "ALLOW"
+    }
+  ],
+  "crash_and_replay_cases": [
+    {
+      "id": "E01",
+      "crash_after_commit_before_publish": true,
+      "outbox_committed": true,
+      "broker_available": false,
+      "replay": true,
+      "expected": "EVENT_RECOVERABLE"
+    },
+    {
+      "id": "E02",
+      "broker_duplicate": true,
+      "receipt_already_present": true,
+      "domain_side_effects": 1,
+      "expected": "ONE_SIDE_EFFECT"
+    },
+    {
+      "id": "E03",
+      "out_of_order": true,
+      "aggregate_version_incoming": 1,
+      "checkpoint_version": 2,
+      "expected": "REJECT_STALE"
+    },
+    {
+      "id": "E04",
+      "booking_same_key_same_payload": true,
+      "slot_unique": true,
+      "expected": "REPLAY_ORIGINAL_RESULT"
+    },
+    {
+      "id": "E05",
+      "booking_same_key_different_payload": true,
+      "slot_unique": true,
+      "expected": "409"
+    },
+    {
+      "id": "E06",
+      "different_key_same_occupied_slot": true,
+      "slot_unique": true,
+      "expected": "SLOT_CONFLICT"
+    },
+    {
+      "id": "E07",
+      "keycloak_mutation_success_audit_confirmation_failed": true,
+      "intent_committed": true,
+      "expected": "RECONCILE_PENDING"
+    },
+    {
+      "id": "E08",
+      "redis_lost": true,
+      "outbox_committed": true,
+      "expected": "REPLAY_AFTER_RECOVERY"
+    }
+  ],
+  "strictly_synthetic": true,
+  "no_database_connection": true,
+  "migration_compatibility_cases": [
+    {
+      "id": "M01",
+      "database": "lms_learning_db",
+      "owner_db": "lms_learning_db",
+      "additive_only": true,
+      "drops_existing_column": false,
+      "cross_owner_write": false,
+      "rollback_defined": true,
+      "expected": true
+    },
+    {
+      "id": "M02",
+      "database": "lms_mentorship_db",
+      "owner_db": "lms_learning_db",
+      "additive_only": true,
+      "drops_existing_column": false,
+      "cross_owner_write": true,
+      "rollback_defined": true,
+      "expected": false
+    },
+    {
+      "id": "M03",
+      "database": "lms_audit_db",
+      "owner_db": "lms_audit_db",
+      "additive_only": false,
+      "drops_existing_column": true,
+      "cross_owner_write": false,
+      "rollback_defined": false,
+      "expected": false
+    }
+  ]
+}

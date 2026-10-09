@@ -1,0 +1,70 @@
+name: LMS Phase3B Contract and Six-Service CI
+on:
+  push:
+    branches: ['main', 'phase3b/**']
+  pull_request:
+    branches: ['main', 'phase3b/**']
+permissions:
+  contents: read
+concurrency:
+  group: lms-be-3b-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  php-contracts:
+    name: Pure PHP frozen contract tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+      - name: Syntax lint all contract harnesses
+        run: |
+          set -euo pipefail
+          find contracts/tests -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Static contracts and fixture acceptance
+        run: |
+          set -euo pipefail
+          php contracts/tests/validate.php
+          php contracts/tests/validate-identity.php
+          php contracts/tests/validate-persistence.php
+          php contracts/tests/validate-compatibility.php
+          php contracts/tests/validate-mock-http.php
+          php contracts/tests/validate-trust-crypto.php
+  independent-services:
+    name: Laravel service ${{ matrix.service }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [gateway, learning, mentorship, knowledge, assistant, audit]
+    defaults:
+      run:
+        working-directory: services/${{ matrix.service }}
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ':memory:'
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      MAIL_MAILER: array
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      BCRYPT_ROUNDS: '4'
+      LOG_CHANNEL: stderr
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo_sqlite, fileinfo, openssl
+          coverage: none
+      - name: Validate locked composer dependencies
+        run: composer validate --strict --no-check-publish
+      - name: Composer install isolated locked deps
+        run: composer install --no-interaction --prefer-dist --no-progress --no-ansi
+      - name: PHPUnit independent service suite
+        run: php artisan test --no-ansi

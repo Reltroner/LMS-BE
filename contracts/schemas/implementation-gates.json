@@ -1,0 +1,77 @@
+{
+  "record_id": "LMS-3B-01-PROVISIONAL-DTO-GATES",
+  "phase": "3B-01",
+  "scope": "CONTRACT_PROPOSALS_NOT_PRODUCTION_IMPLEMENTATION",
+  "sources": {
+    "freeze_sha": "b9390a06ebc5db5377059a99109d59fea092cccb",
+    "logical_contract_blob": "cf089b8df4b5ccb1761b504ffae662a0053bf03e"
+  },
+  "invariants": [
+    "Exactly 26 public method/path operations",
+    "Exactly 19 capabilities; admin.learning.read and admin.learning.override reserved",
+    "All external API v1 operations protected by bearer JWT; guest offerings disabled until owner publication policy",
+    "GET mentorship availability requires mentorship.booking.create.self",
+    "POST mentorship bookings requires Idempotency-Key header",
+    "No cross-database writes and no implementation of new business controller in 3B-01"
+  ],
+  "fields_not_yet_authoritatively_frozen": [
+    {
+      "id": "DTO-01",
+      "topic": "Learning create/progress/bookmark payload shapes and historical course revision semantics",
+      "blocking_phase": "Phase 5 before Learning domain provider implementation"
+    },
+    {
+      "id": "DTO-02",
+      "topic": "Mentorship offerings projection visibility / guest access",
+      "blocking_phase": "OWNER_POLICY_APPROVAL + sanitized public field allowlist + auth/privacy negative tests before optional guest release"
+    },
+    {
+      "id": "DTO-03",
+      "topic": "Mentorship booking ID/slot/temporal schema, idempotency TTL, replay and transaction-safe occupancy",
+      "blocking_phase": "3B-03 protocol detail + Phase 7 DB/auth provider acceptance"
+    },
+    {
+      "id": "DTO-04",
+      "topic": "Principal projection, admin role grant allowlist, Keycloak adapter and Audit reconciliation",
+      "blocking_phase": "3B-02 trust + 3B-03 event + Phase 6 admin interface"
+    },
+    {
+      "id": "DTO-05",
+      "topic": "Knowledge search response, provenance/right attestation, permission-aware snippet ACL",
+      "blocking_phase": "Phase 8 before authorized search provider"
+    },
+    {
+      "id": "DTO-06",
+      "topic": "Assistant query response, tool calling, latency/cost control and prompt-injection handling",
+      "blocking_phase": "Phase 9 before assistant endpoint"
+    },
+    {
+      "id": "DTO-07",
+      "topic": "Cursor page maximum/retention and pagination response compatibility",
+      "blocking_phase": "3B-06 provider/consumer versioned contract approval"
+    },
+    {
+      "id": "DTO-08",
+      "topic": "Error domain-specific status codes, 409 semantics, resource 404-vs-403 disclosure rules",
+      "blocking_phase": "3B-06 provider/consumer negative tests"
+    },
+    {
+      "id": "DTO-09",
+      "topic": "OIDC client config and exact effective token claim semantics",
+      "blocking_phase": "3B-02 negative fixtures + Phase 4 provisioning"
+    },
+    {
+      "id": "DTO-10",
+      "topic": "Live runtime tests, CI security and service-to-service assertion",
+      "blocking_phase": "3B-05/06 CI and Phase 4 runtime"
+    }
+  ],
+  "excluded": [
+    "Production operations",
+    "Full domain business DTO implementation",
+    "Real provider/consumer live endpoint compatibility claims",
+    "Changes to approved Phase 0C/1 frozen contracts",
+    "Opening public mentorship offerings without owner approval"
+  ],
+  "default_guest_policy": "AUTH_REQUIRED_WITH_CAPABILITY"
+}

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reltroner LMS Phase 3B-02 Identity/Trust Design Contract",
+  "contract_version": "1.0.0-candidate",
+  "source_freeze": "b9390a06ebc5db5377059a99109d59fea092cccb",
+  "oidc": {
+    "issuer": "https://auth.reltroner.com/realms/reltroner",
+    "audience": "lms-api",
+    "browser_clients": {
+      "lms-user": {
+        "redirect_host": "lms.reltroner.com",
+        "public": true,
+        "flow": "authorization_code",
+        "pkce": "S256",
+        "admin_api_access": false
+      },
+      "lms-admin": {
+        "redirect_host": "lms-admin.reltroner.com",
+        "public": true,
+        "flow": "authorization_code",
+        "pkce": "S256",
+        "learner_api_access": "capability_grant_only"
+      }
+    },
+    "access_token": {
+      "type": "access",
+      "signature_verification": "REQUIRED_TRUSTED_JWKS_OR_KID",
+      "allowed_signing_algorithms": "BLOCKED_PENDING_SIGNED_3B02_CRYPTO_PARAMETER_ADR",
+      "claims_required": [
+        "iss",
+        "aud",
+        "sub",
+        "exp",
+        "azp"
+      ],
+      "claims_if_present": [
+        "nbf",
+        "iat",
+        "jti"
+      ],
+      "deny": [
+        "ID token as API credential",
+        "alg none",
+        "unsigned JWT",
+        "aud!=lms-api",
+        "unrecognized azp",
+        "default-to-student fallback",
+        "missing capability",
+        "stale realm role treated as direct capability",
+        "principal header without signed trust"
+      ]
+    },
+    "scopes": "Keycloak lms-api client-role capabilities only; no HRM role/scope changes",
+    "csrf": "OIDC state/nonce verified in client flow; same-origin callback only"
+  },
+  "internal_workload": {
+    "transport": "PRIVATE_HTTP_JSON_ONLY",
+    "mTLS_or_service_identity": "SIGNED_WORKLOAD_ASSERTION_REQUIRED_NOT_YET_IMPLEMENTED",
+    "delegation": "SIGNED_SCOPED_PRINCIPAL_DELEGATION_REQUIRED",
+    "mode": "dual_assertion",
+    "required_claims": [
+      "iss",
+      "sub",
+      "aud",
+      "iat",
+      "nbf",
+      "exp",
+      "jti",
+      "kid",
+      "caller_service",
+      "recipient_service",
+      "operation_id",
+      "principal_sub",
+      "principal_capabilities",
+      "request_id"
+    ],
+    "claims": {
+      "iss": "lms-internal-trust",
+      "aud": "lms-internal-services",
+      "sub": "workload-service-principal",
+      "caller_service": "gateway",
+      "recipient_service": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "principal-synthetic",
+      "principal_capabilities": [
+        "learning.enrollment.read.self"
+      ]
+    },
+    "allowed_services": [
+      "gateway",
+      "learning",
+      "mentorship",
+      "knowledge",
+      "assistant",
+      "audit"
+    ],
+    "guarantees": [
+      "signature cryptographically verified with scoped key",
+      "kid bound to an approved service identity",
+      "caller and recipient exact matches",
+      "operation allowed by service policy",
+      "principal capability intersection, never elevation",
+      "jti replay cache/durable strategy before prod",
+      "iat/nbf/exp short bounded freshness",
+      "request_id matched and propagated",
+      "timeout, body bounds, no public service ingress",
+      "deny unsigned X-User-Id headers"
+    ],
+    "cryptographic_parameters": {
+      "algorithm": "PENDING_SECURITY_ADR",
+      "JWKS_or_key_distribution": "PENDING_SECURITY_ADR",
+      "rotation_window": "PENDING_SECURITY_ADR",
+      "clock_skew_seconds": "PENDING_SECURITY_ADR",
+      "assertion_max_ttl_seconds": "PENDING_SECURITY_ADR",
+      "nonce_storage": "PENDING_SECURITY_ADR"
+    },
+    "not_approved_until": "cryptographic selection with positive/negative real-signature fixtures signed by owner"
+  },
+  "owner_boundary": {
+    "HRM_realm_mappers_touched": false,
+    "production_keycloak_clients_created": false,
+    "admin_secrets_stored": false,
+    "provisioning_gate": "Phase 4 separate owner approval",
+    "implementation": "SCHEMA_AND_SANITIZED_MODEL_TEST_ONLY"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "source": "synthetic negative fixtures ONLY; no live HTTP service",
+  "negative_cases": [
+    {
+      "id": "C01",
+      "attack": "remove expected GET /api/v1/me",
+      "expected": "REJECT_BREAKING_ROUTE_CHANGE"
+    },
+    {
+      "id": "C02",
+      "attack": "add unexpected POST /api/v1/admin/learning/override",
+      "expected": "REJECT_UNFROZEN_ROUTE"
+    },
+    {
+      "id": "C03",
+      "attack": "drop learning enrollment capability",
+      "expected": "REJECT_PERMISSION_DRIFT"
+    },
+    {
+      "id": "C04",
+      "attack": "replace learning.progress.updated with unapproved event",
+      "expected": "REJECT_EVENT_DRIFT"
+    },
+    {
+      "id": "C05",
+      "attack": "client lms-user uses admin.principal.read",
+      "expected": "DENY_WRONG_CLIENT"
+    },
+    {
+      "id": "C06",
+      "attack": "cross-principal read owner A accesses principal B enrollment",
+      "expected": "DENY_WRONG_OWNER"
+    },
+    {
+      "id": "C07",
+      "attack": "guest reads mentorship offering",
+      "expected": "DENY_GUEST"
+    },
+    {
+      "id": "C08",
+      "attack": "guest sends Assistant query",
+      "expected": "DENY_GUEST"
+    },
+    {
+      "id": "C09",
+      "attack": "Knowledge search hit private ACL absent",
+      "expected": "DENY_PRIVATE_SNIPPET"
+    },
+    {
+      "id": "C10",
+      "attack": "duplicate inbox event and already committed receipt",
+      "expected": "SKIP_REPLAY"
+    },
+    {
+      "id": "C11",
+      "attack": "event version stale lower than checkpoint",
+      "expected": "REJECT_OUT_OF_ORDER"
+    },
+    {
+      "id": "C12",
+      "attack": "new index release fails verification",
+      "expected": "KEEP_PREVIOUS_RELEASE"
+    },
+    {
+      "id": "C13",
+      "attack": "Knowledge release attestation missing rights",
+      "expected": "REJECT_UNATTESTED_RELEASE"
+    },
+    {
+      "id": "C14",
+      "attack": "Knowledge release hash doesn't match expected immutable source",
+      "expected": "REJECT_FORGED_RELEASE"
+    },
+    {
+      "id": "C15",
+      "attack": "delegated principal header unsigned",
+      "expected": "DENY_UNBOUND_PRINCIPAL"
+    }
+  ]
+}
