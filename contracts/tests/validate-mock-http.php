@@ -39,7 +39,7 @@ foreach($fx['operation_contract_cases'] as $row){
     $owner=$p['actor_binding']==='SIGNED_SUB_AND_RESOURCE_OWNER'?'subject-a':null;
     $allowed=contractDecision($p,$identity,$owner);
     $successCodes=array_filter(array_keys($op['responses']??[]),fn($n)=>(int)$n>=200&&(int)$n<300);
-    checkMock(completeOperation($op,$p),'B3-AC04 metadata and bearer mock '+$p['id']);
+    checkMock(completeOperation($op,$p),'B3-AC04 metadata and bearer mock '.$p['id']);
     checkMock($allowed===200&&count($successCodes)>0&&in_array($row['success_status'],array_map('intval',$successCodes),true),'B3-AC04 positive mock '.$p['id']);
     checkMock(contractDecision($p,null,$owner)===401 && isset($op['responses']['401']),'B3-AC22 anonymous mock '.$p['id']);
     if($p['capability']!==null){
