@@ -1,0 +1,5 @@
+# Phase 3B-02 — Identity and Internal Trust
+
+This is an **unmerged design/fixture candidate**, not live Keycloak provisioning or verified cryptography. OIDC issuer `https://auth.reltroner.com/realms/reltroner`, audience `lms-api`, browser clients `lms-user` and `lms-admin`, Authorization Code/PKCE S256. Wrong sibling client, ID token, forged claims, missing capabilities and unsigned user headers fail closed. Internal workload principal delegation requires BOTH authenticated caller and signed operation/recipient/sub-bound delegation with freshness, nonce/replay, key rotation and real signature checks. **Cryptographic algorithm, key distribution, TTL/skew and replay persistence are explicit BLOCKERS** before private handlers or runtime integration. No HRM/production identity changes.
+
+From repo root: `php -l contracts/tests/validate-identity.php`; `php contracts/tests/validate-identity.php`. Assertions use synthetic claims and cannot prove actual crypto signature verification. Required gates: B3-AC05..08.
