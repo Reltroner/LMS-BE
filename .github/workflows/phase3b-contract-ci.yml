@@ -1,7 +1,7 @@
 name: LMS Phase3B Contract and Six-Service CI
 on:
   push:
-    branches: ['main', 'phase3-dev', 'phase3b/**']
+    branches: ['main', 'phase3b/**']
   pull_request:
     branches: ['main', 'phase3b/**']
 permissions:
