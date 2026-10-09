@@ -97,5 +97,37 @@
     }
   ],
   "strictly_synthetic": true,
-  "no_database_connection": true
+  "no_database_connection": true,
+  "migration_compatibility_cases": [
+    {
+      "id": "M01",
+      "database": "lms_learning_db",
+      "owner_db": "lms_learning_db",
+      "additive_only": true,
+      "drops_existing_column": false,
+      "cross_owner_write": false,
+      "rollback_defined": true,
+      "expected": true
+    },
+    {
+      "id": "M02",
+      "database": "lms_mentorship_db",
+      "owner_db": "lms_learning_db",
+      "additive_only": true,
+      "drops_existing_column": false,
+      "cross_owner_write": true,
+      "rollback_defined": true,
+      "expected": false
+    },
+    {
+      "id": "M03",
+      "database": "lms_audit_db",
+      "owner_db": "lms_audit_db",
+      "additive_only": false,
+      "drops_existing_column": true,
+      "cross_owner_write": false,
+      "rollback_defined": false,
+      "expected": false
+    }
+  ]
 }
