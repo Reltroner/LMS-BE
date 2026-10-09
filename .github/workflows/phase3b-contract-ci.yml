@@ -1,7 +1,7 @@
 name: LMS Phase3B Contract and Six-Service CI
 on:
   push:
-    branches: ['phase3b/**']
+    branches: ['main', 'phase3-dev', 'phase3b/**']
   pull_request:
     branches: ['main', 'phase3b/**']
 permissions:
@@ -30,7 +30,9 @@ jobs:
           php contracts/tests/validate.php
           php contracts/tests/validate-identity.php
           php contracts/tests/validate-persistence.php
-          if test -f contracts/tests/validate-compatibility.php; then php contracts/tests/validate-compatibility.php; fi
+          php contracts/tests/validate-compatibility.php
+          php contracts/tests/validate-mock-http.php
+          php contracts/tests/validate-trust-crypto.php
   independent-services:
     name: Laravel service ${{ matrix.service }}
     runs-on: ubuntu-24.04
