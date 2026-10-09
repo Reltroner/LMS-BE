@@ -197,6 +197,35 @@ try {
     inspectReferences($spec, $spec, $badRefs);
     assertContract($badRefs === [], "B3-AC04: all internal OpenAPI JSON references resolve");
 
+    $routeCaseOK = count($fx["operation_contract_cases"] ?? []) === 26;
+    foreach ($fx["operation_contract_cases"] ?? [] as $case) {
+        $op = $opIndex[$case["id"]] ?? null;
+        if (!is_array($op) ||
+            ($op["x-lms-domain-owner"] ?? null) !== $case["model_owner"] ||
+            ($op["x-lms-capability"] ?? null) !== $case["required_capability"] ||
+            ($op["x-lms-browser-client"] ?? null) !== $case["required_client"] ||
+            !array_key_exists((string) $case["success_status"], $op["responses"]) ||
+            !array_key_exists("401", $op["responses"]) ||
+            !array_key_exists("403", $op["responses"])) {
+            $routeCaseOK = false;
+            continue;
+        }
+        $declaredErrors = array_values(array_filter(array_map("intval", array_keys($op["responses"])), fn($code) => $code >= 400));
+        sort($declaredErrors);
+        if ($declaredErrors !== $case["error_statuses"]) { $routeCaseOK = false; }
+    }
+    assertContract($routeCaseOK, "B3-AC04: exact per-operation mock status/errors/client/owner fixture coverage");
+    $problemExamplesOK = true;
+    foreach (["Unauthorized" => 401,"Forbidden" => 403,"NotFound" => 404,
+              "Conflict" => 409,"InvalidRequest" => 422,"ServerFailure" => 500] as $name => $status) {
+        $decl = $spec["components"]["responses"][$name]["content"]["application/problem+json"]["examples"] ?? [];
+        if (count($decl) !== 1 ||
+            (array_values($decl)[0]["value"]["status"] ?? null) !== $status) {
+            $problemExamplesOK = false;
+        }
+    }
+    assertContract($problemExamplesOK, "B3-AC03: each Problem Details example matches its HTTP status");
+
     $samples = $fx["http_samples"] ?? [];
     $sampleOK = true;
     foreach ([401,403,409] as $status) {
