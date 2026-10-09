@@ -1986,33 +1986,13 @@
               "$ref": "#/components/schemas/ProblemDetails"
             },
             "examples": {
-              "unauthorized": {
+              "status_401": {
                 "value": {
                   "type": "about:blank",
                   "title": "Unauthorized",
                   "status": 401,
                   "detail": "A valid access token is required.",
                   "code": "UNAUTHORIZED",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "forbidden": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Forbidden",
-                  "status": 403,
-                  "detail": "The required capability or resource ownership is missing.",
-                  "code": "FORBIDDEN",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "conflict": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Conflict",
-                  "status": 409,
-                  "detail": "The requested state transition conflicts with the current resource state.",
-                  "code": "DOMAIN_CONFLICT",
                   "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
                 }
               }
@@ -2037,33 +2017,13 @@
               "$ref": "#/components/schemas/ProblemDetails"
             },
             "examples": {
-              "unauthorized": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Unauthorized",
-                  "status": 401,
-                  "detail": "A valid access token is required.",
-                  "code": "UNAUTHORIZED",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "forbidden": {
+              "status_403": {
                 "value": {
                   "type": "about:blank",
                   "title": "Forbidden",
                   "status": 403,
-                  "detail": "The required capability or resource ownership is missing.",
+                  "detail": "The required capability is missing.",
                   "code": "FORBIDDEN",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "conflict": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Conflict",
-                  "status": 409,
-                  "detail": "The requested state transition conflicts with the current resource state.",
-                  "code": "DOMAIN_CONFLICT",
                   "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
                 }
               }
@@ -2088,33 +2048,13 @@
               "$ref": "#/components/schemas/ProblemDetails"
             },
             "examples": {
-              "unauthorized": {
+              "status_404": {
                 "value": {
                   "type": "about:blank",
-                  "title": "Unauthorized",
-                  "status": 401,
-                  "detail": "A valid access token is required.",
-                  "code": "UNAUTHORIZED",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "forbidden": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Forbidden",
-                  "status": 403,
-                  "detail": "The required capability or resource ownership is missing.",
-                  "code": "FORBIDDEN",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "conflict": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Conflict",
-                  "status": 409,
-                  "detail": "The requested state transition conflicts with the current resource state.",
-                  "code": "DOMAIN_CONFLICT",
+                  "title": "Not Found",
+                  "status": 404,
+                  "detail": "The requested resource is not accessible.",
+                  "code": "RESOURCE_NOT_FOUND",
                   "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
                 }
               }
@@ -2139,32 +2079,12 @@
               "$ref": "#/components/schemas/ProblemDetails"
             },
             "examples": {
-              "unauthorized": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Unauthorized",
-                  "status": 401,
-                  "detail": "A valid access token is required.",
-                  "code": "UNAUTHORIZED",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "forbidden": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Forbidden",
-                  "status": 403,
-                  "detail": "The required capability or resource ownership is missing.",
-                  "code": "FORBIDDEN",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "conflict": {
+              "status_409": {
                 "value": {
                   "type": "about:blank",
                   "title": "Conflict",
                   "status": 409,
-                  "detail": "The requested state transition conflicts with the current resource state.",
+                  "detail": "A conflicting resource state was detected.",
                   "code": "DOMAIN_CONFLICT",
                   "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
                 }
@@ -2190,33 +2110,13 @@
               "$ref": "#/components/schemas/ProblemDetails"
             },
             "examples": {
-              "unauthorized": {
+              "status_422": {
                 "value": {
                   "type": "about:blank",
-                  "title": "Unauthorized",
-                  "status": 401,
-                  "detail": "A valid access token is required.",
-                  "code": "UNAUTHORIZED",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "forbidden": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Forbidden",
-                  "status": 403,
-                  "detail": "The required capability or resource ownership is missing.",
-                  "code": "FORBIDDEN",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "conflict": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Conflict",
-                  "status": 409,
-                  "detail": "The requested state transition conflicts with the current resource state.",
-                  "code": "DOMAIN_CONFLICT",
+                  "title": "Unprocessable Content",
+                  "status": 422,
+                  "detail": "The request content is invalid.",
+                  "code": "VALIDATION_ERROR",
                   "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
                 }
               }
@@ -2241,33 +2141,13 @@
               "$ref": "#/components/schemas/ProblemDetails"
             },
             "examples": {
-              "unauthorized": {
+              "status_500": {
                 "value": {
                   "type": "about:blank",
-                  "title": "Unauthorized",
-                  "status": 401,
-                  "detail": "A valid access token is required.",
-                  "code": "UNAUTHORIZED",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "forbidden": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Forbidden",
-                  "status": 403,
-                  "detail": "The required capability or resource ownership is missing.",
-                  "code": "FORBIDDEN",
-                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
-                }
-              },
-              "conflict": {
-                "value": {
-                  "type": "about:blank",
-                  "title": "Conflict",
-                  "status": 409,
-                  "detail": "The requested state transition conflicts with the current resource state.",
-                  "code": "DOMAIN_CONFLICT",
+                  "title": "Internal Server Error",
+                  "status": 500,
+                  "detail": "The operation could not be completed.",
+                  "code": "INTERNAL_ERROR",
                   "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
                 }
               }
