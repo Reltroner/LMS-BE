@@ -647,7 +647,7 @@
         "x-lms-operation-id": "API-10",
         "x-lms-domain-owner": "mentorship",
         "x-lms-capability": "mentorship.offering.read",
-        "x-lms-browser-client": "PENDING_PUBLIC_PROJECTION_POLICY",
+        "x-lms-browser-client": "lms-user",
         "x-lms-owner-binding": "AUTHZ_CAPABILITY",
         "x-lms-guest-policy": "GUEST_DENIED_PENDING_OWNER_PUBLIC_PROJECTION_POLICY",
         "x-lms-proposed-dto": true,
@@ -703,7 +703,8 @@
           "500": {
             "$ref": "#/components/responses/ServerFailure"
           }
-        }
+        },
+        "x-lms-original-fz10-client-policy": "PENDING_PUBLIC_PROJECTION_POLICY"
       }
     },
     "/api/v1/mentorship/offerings/{offering_id}": {
@@ -722,7 +723,7 @@
         "x-lms-operation-id": "API-11",
         "x-lms-domain-owner": "mentorship",
         "x-lms-capability": "mentorship.offering.read",
-        "x-lms-browser-client": "PENDING_PUBLIC_PROJECTION_POLICY",
+        "x-lms-browser-client": "lms-user",
         "x-lms-owner-binding": "AUTHZ_CAPABILITY",
         "x-lms-guest-policy": "GUEST_DENIED_PENDING_OWNER_PUBLIC_PROJECTION_POLICY",
         "x-lms-proposed-dto": true,
@@ -763,7 +764,8 @@
           "500": {
             "$ref": "#/components/responses/ServerFailure"
           }
-        }
+        },
+        "x-lms-original-fz10-client-policy": "PENDING_PUBLIC_PROJECTION_POLICY"
       }
     },
     "/api/v1/mentorship/availability": {
