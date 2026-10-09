@@ -530,5 +530,439 @@
     "Fixtures contain only synthetic non-secret claims, never JWT strings or Keycloak credentials.",
     "Model denial simulation is not verification of deployed Laravel middleware or Keycloak roles.",
     "Guest offerings stay deny-by-default; owner may later approve explicitly sanitized public projection."
-  ]
+  ],
+  "operation_contract_cases": [
+    {
+      "id": "API-01",
+      "method": "GET",
+      "path": "/api/v1/me",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        500
+      ],
+      "model_owner": "gateway",
+      "required_capability": null,
+      "required_client": "any_valid_lms_client",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-02",
+      "method": "GET",
+      "path": "/api/v1/learning/enrollments",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.enrollment.read.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-03",
+      "method": "POST",
+      "path": "/api/v1/learning/enrollments",
+      "success_status": 201,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.enrollment.create.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-04",
+      "method": "GET",
+      "path": "/api/v1/learning/enrollments/{enrollment_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.enrollment.read.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-05",
+      "method": "GET",
+      "path": "/api/v1/learning/courses/{course_id}/progress",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.progress.read.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-06",
+      "method": "PUT",
+      "path": "/api/v1/learning/courses/{course_id}/lessons/{lesson_id}/progress",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.progress.write.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-07",
+      "method": "GET",
+      "path": "/api/v1/learning/bookmarks",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.bookmark.read.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-08",
+      "method": "PUT",
+      "path": "/api/v1/learning/bookmarks/{content_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.bookmark.write.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-09",
+      "method": "DELETE",
+      "path": "/api/v1/learning/bookmarks/{content_id}",
+      "success_status": 204,
+      "error_statuses": [
+        401,
+        403,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "learning",
+      "required_capability": "learning.bookmark.write.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-10",
+      "method": "GET",
+      "path": "/api/v1/mentorship/offerings",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "mentorship",
+      "required_capability": "mentorship.offering.read",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-11",
+      "method": "GET",
+      "path": "/api/v1/mentorship/offerings/{offering_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "mentorship",
+      "required_capability": "mentorship.offering.read",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-12",
+      "method": "GET",
+      "path": "/api/v1/mentorship/availability",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "mentorship",
+      "required_capability": "mentorship.booking.create.self",
+      "required_client": "authenticated_lms_user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-13",
+      "method": "GET",
+      "path": "/api/v1/mentorship/bookings",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "mentorship",
+      "required_capability": "mentorship.booking.read.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-14",
+      "method": "POST",
+      "path": "/api/v1/mentorship/bookings",
+      "success_status": 201,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "mentorship",
+      "required_capability": "mentorship.booking.create.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-15",
+      "method": "GET",
+      "path": "/api/v1/mentorship/bookings/{booking_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "mentorship",
+      "required_capability": "mentorship.booking.read.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-16",
+      "method": "POST",
+      "path": "/api/v1/mentorship/bookings/{booking_id}/cancel",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "mentorship",
+      "required_capability": "mentorship.booking.cancel.self",
+      "required_client": "lms-user",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-17",
+      "method": "GET",
+      "path": "/api/v1/knowledge/search",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "knowledge",
+      "required_capability": "knowledge.search",
+      "required_client": "authenticated_lms_client",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-18",
+      "method": "POST",
+      "path": "/api/v1/assistant/query",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "assistant",
+      "required_capability": "assistant.use",
+      "required_client": "authenticated_lms_client",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-19",
+      "method": "GET",
+      "path": "/api/v1/admin/principals",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "gateway+audit",
+      "required_capability": "admin.principal.read",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-20",
+      "method": "GET",
+      "path": "/api/v1/admin/principals/{principal_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "gateway+audit",
+      "required_capability": "admin.principal.read",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-21",
+      "method": "PATCH",
+      "path": "/api/v1/admin/principals/{principal_id}/roles",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "gateway+audit",
+      "required_capability": "admin.principal.role.manage",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-22",
+      "method": "GET",
+      "path": "/api/v1/admin/mentorship/bookings",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "mentorship+audit",
+      "required_capability": "admin.mentorship.read",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-23",
+      "method": "GET",
+      "path": "/api/v1/admin/mentorship/bookings/{booking_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "mentorship+audit",
+      "required_capability": "admin.mentorship.read",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-24",
+      "method": "PATCH",
+      "path": "/api/v1/admin/mentorship/bookings/{booking_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        409,
+        422,
+        500
+      ],
+      "model_owner": "mentorship+audit",
+      "required_capability": "admin.mentorship.manage",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-25",
+      "method": "GET",
+      "path": "/api/v1/admin/audit-events",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "audit",
+      "required_capability": "admin.audit.read",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    },
+    {
+      "id": "API-26",
+      "method": "GET",
+      "path": "/api/v1/admin/audit-events/{audit_event_id}",
+      "success_status": 200,
+      "error_statuses": [
+        401,
+        403,
+        404,
+        500
+      ],
+      "model_owner": "audit",
+      "required_capability": "admin.audit.read",
+      "required_client": "lms-admin",
+      "expected_bearer_security": true
+    }
+  ],
+  "operation_case_status": "SCHEMA_EXPECTATIONS_ONLY_NOT_LIVE_HTTP"
 }
