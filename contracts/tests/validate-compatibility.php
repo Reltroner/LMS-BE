@@ -50,15 +50,26 @@ t(eventDecision(true,3,2)==='SKIP_REPLAY','B3-AC23 duplicate event receipt');
 t(eventDecision(false,1,2)==='REJECT_OUT_OF_ORDER','B3-AC23 stale event version');
 function swapIndex(bool $valid):string{return $valid?'RELEASE_NEW_INDEX':'KEEP_PREVIOUS_RELEASE';}
 t(swapIndex(false)==='KEEP_PREVIOUS_RELEASE','B3-AC23 index rollback model');
-function knowledgeRelease(?array $attestation):bool{
- if($attestation===null)return false;
- return ($attestation['published']??false)===true&&
-  ($attestation['rights']??null)==='public-redistribution-allowed'&&
-  preg_match('/^[a-f0-9]{40}$/',$attestation['source_commit_sha']??'')===1&&
-  preg_match('/^[a-f0-9]{64}$/',$attestation['digest_sha256']??'')===1;
+/** Static trust-reference comparison, NOT a live Studio signature or rights verification. */
+function knowledgeRelease(?array $attestation,?array $independentExpected):bool{
+ if($attestation===null||$independentExpected===null)return false;
+ if(($attestation['published']??false)!==true||($attestation['rights']??null)!=='public-redistribution-allowed')return false;
+ foreach(['source_commit_sha'=>40,'digest_sha256'=>64] as $key=>$length){
+  $a=$attestation[$key]??'';
+  $b=$independentExpected[$key]??'';
+  if(!is_string($a)||!is_string($b)||strlen($a)!==$length||strlen($b)!==$length||
+     !ctype_xdigit($a)||!ctype_xdigit($b)||!hash_equals($b,$a))return false;
+ }
+ return true;
 }
-t(!knowledgeRelease(null),'B3-AC24 missing source attestation rejected');
-t(!knowledgeRelease(['published'=>true,'rights'=>'private','source_commit_sha'=>str_repeat('a',40),'digest_sha256'=>str_repeat('b',64)]),'B3-AC24 private rights rejected');
-t(!knowledgeRelease(['published'=>true,'rights'=>'public-redistribution-allowed','source_commit_sha'=>'fake','digest_sha256'=>str_repeat('b',64)]),'B3-AC24 forged source hash rejected');
+$trustedSource=['source_commit_sha'=>str_repeat('a',40),'digest_sha256'=>hash('sha256','synthetic-known-published-Studio-source')];
+$legit=['published'=>true,'rights'=>'public-redistribution-allowed']+$trustedSource;
+t(knowledgeRelease($legit,$trustedSource),'B3-AC24 approved synthetic pinned source accepted');
+t(!knowledgeRelease(null,$trustedSource),'B3-AC24 missing source attestation rejected');
+t(!knowledgeRelease($legit,null),'B3-AC24 untrusted no independent source pinned rejected');
+t(!knowledgeRelease(array_replace($legit,['rights'=>'private']),$trustedSource),'B3-AC24 private rights rejected');
+t(!knowledgeRelease(array_replace($legit,['source_commit_sha'=>str_repeat('b',40)]),$trustedSource),'B3-AC24 well-shaped wrong commit rejected');
+t(!knowledgeRelease(array_replace($legit,['digest_sha256'=>str_repeat('b',64)]),$trustedSource),'B3-AC24 well-shaped wrong digest rejected');
+t(!knowledgeRelease(array_replace($legit,['source_commit_sha'=>'fake']),$trustedSource),'B3-AC24 invalid SHA rejected');
 t(count($cases['negative_cases'])===15&&count($persist['databases'])===4&&$id['internal_workload']['delegation']==='SIGNED_SCOPED_PRINCIPAL_DELEGATION_REQUIRED','B3-AC21..24 fixture and dependency inventory');
 echo "3B06 MODEL CONTRACT: $passes PASS / ".count($fails)." FAIL\n";exit($fails?1:0);
