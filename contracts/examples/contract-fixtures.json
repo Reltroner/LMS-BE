@@ -1,0 +1,534 @@
+{
+  "schema_version": 1,
+  "kind": "CONTRACT_ONLY_SIMULATIONS_NOT_HTTP_SERVER_TESTS",
+  "positive_authorization": [
+    {
+      "id": "P01",
+      "operation_id": "API-01",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P02",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P03",
+      "operation_id": "API-10",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "mentorship.offering.read"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P04",
+      "operation_id": "API-12",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "mentorship.booking.create.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P05",
+      "operation_id": "API-14",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "mentorship.booking.create.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P06",
+      "operation_id": "API-17",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "knowledge.search"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P07",
+      "operation_id": "API-18",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "assistant.use"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P08",
+      "operation_id": "API-21",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-admin",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "admin.principal.role.manage"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    },
+    {
+      "id": "P09",
+      "operation_id": "API-25",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-admin",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "admin.audit.read"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 200
+    }
+  ],
+  "negative_authorization": [
+    {
+      "id": "N01",
+      "operation_id": "API-10",
+      "claims": null,
+      "expected": 401,
+      "reason": "Guest offerings denied by default"
+    },
+    {
+      "id": "N02",
+      "operation_id": "API-18",
+      "claims": null,
+      "expected": 401,
+      "reason": "Guest AI denied"
+    },
+    {
+      "id": "N03",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 403,
+      "reason": "Missing capability"
+    },
+    {
+      "id": "N04",
+      "operation_id": "API-21",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "admin.principal.role.manage"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 403,
+      "reason": "Wrong browser client for admin"
+    },
+    {
+      "id": "N05",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-999"
+      },
+      "expected": 403,
+      "reason": "Self resource not owned"
+    },
+    {
+      "id": "N06",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": false,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 401,
+      "reason": "Invalid signature"
+    },
+    {
+      "id": "N07",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://evil.example/realm",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 401,
+      "reason": "Wrong issuer"
+    },
+    {
+      "id": "N08",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "some-other-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 401,
+      "reason": "Wrong resource audience"
+    },
+    {
+      "id": "N09",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": false,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 401,
+      "reason": "Expired token"
+    },
+    {
+      "id": "N10",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": false,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 401,
+      "reason": "Future not-before"
+    },
+    {
+      "id": "N11",
+      "operation_id": "API-02",
+      "claims": {
+        "token_use": "id",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "learning.enrollment.read.self"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 401,
+      "reason": "ID token misuse"
+    },
+    {
+      "id": "N12",
+      "operation_id": "API-21",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-admin",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "admin.learning.read"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 403,
+      "reason": "Reserved capability cannot privilege role patch"
+    },
+    {
+      "id": "N13",
+      "operation_id": "API-10",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 403,
+      "reason": "Offerings capability required even to authenticated client"
+    },
+    {
+      "id": "N14",
+      "operation_id": "API-12",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "mentorship.offering.read"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 403,
+      "reason": "Availability requires booking capability"
+    },
+    {
+      "id": "N15",
+      "operation_id": "API-25",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "lms-user",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [
+          "admin.audit.read"
+        ],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 403,
+      "reason": "Admin plane isolated"
+    },
+    {
+      "id": "N16",
+      "operation_id": "API-01",
+      "claims": {
+        "token_use": "access",
+        "iss": "https://auth.reltroner.com/realms/reltroner",
+        "aud": "lms-api",
+        "azp": "unknown-oidc-client",
+        "signature_valid": true,
+        "exp_valid": true,
+        "nbf_valid": true,
+        "sub": "principal-001",
+        "capabilities": [],
+        "resource_principal_id": "principal-001"
+      },
+      "expected": 401,
+      "reason": "Unapproved OAuth client"
+    }
+  ],
+  "http_samples": {
+    "problem_401": {
+      "status": 401,
+      "media_type": "application/problem+json",
+      "body": {
+        "type": "about:blank",
+        "title": "Unauthorized",
+        "status": 401,
+        "detail": "A valid access token is required.",
+        "code": "UNAUTHORIZED",
+        "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+      }
+    },
+    "problem_403": {
+      "status": 403,
+      "media_type": "application/problem+json",
+      "body": {
+        "type": "about:blank",
+        "title": "Forbidden",
+        "status": 403,
+        "detail": "Required LMS capability is missing.",
+        "code": "FORBIDDEN",
+        "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+      }
+    },
+    "problem_409": {
+      "status": 409,
+      "media_type": "application/problem+json",
+      "body": {
+        "type": "about:blank",
+        "title": "Conflict",
+        "status": 409,
+        "detail": "Booking idempotency key reused with different payload.",
+        "code": "IDEMPOTENCY_CONFLICT",
+        "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+      }
+    },
+    "collection": {
+      "data": [
+        {
+          "id": "opaque-enrollment-01",
+          "course_id": "course-worldbuilding-01"
+        }
+      ],
+      "page": {
+        "next_cursor": null
+      }
+    },
+    "booking_request": {
+      "headers": {
+        "Idempotency-Key": "booking-unique-nonsecret-00000001"
+      },
+      "body": {
+        "offering_id": "offering-001",
+        "slot_id": "slot-001"
+      }
+    },
+    "principal_projection": {
+      "sub": "principal-001",
+      "capabilities": [
+        "learning.enrollment.read.self"
+      ]
+    }
+  },
+  "security_boundary_notes": [
+    "Fixtures contain only synthetic non-secret claims, never JWT strings or Keycloak credentials.",
+    "Model denial simulation is not verification of deployed Laravel middleware or Keycloak roles.",
+    "Guest offerings stay deny-by-default; owner may later approve explicitly sanitized public projection."
+  ]
+}
