@@ -163,7 +163,7 @@ try {
     $booking = $opIndex["API-14"] ?? [];
     $idempotency = false;
     foreach ($booking["parameters"] ?? [] as $param) {
-        if (($param["$ref"] ?? null) === "#/components/parameters/IdempotencyKey") {
+        if (($param['$ref'] ?? null) === "#/components/parameters/IdempotencyKey") {
             $idempotency = true;
         }
     }
@@ -179,7 +179,7 @@ try {
         $problem["additionalProperties"] === false,
         "B3-AC03: RFC7807-compatible error schema requires code/request_id and rejects stack fields");
     $collection = $schemas["CursorCollection"] ?? [];
-    assertContract(($collection["properties"]["page"]["$ref"] ?? null) === "#/components/schemas/PageInfo" &&
+    assertContract(($collection["properties"]["page"]['$ref'] ?? null) === "#/components/schemas/PageInfo" &&
         ($schemas["PageInfo"]["properties"]["next_cursor"]["type"] ?? []) === ["string","null"],
         "B3-AC03: bounded cursor collection plus nullable next_cursor");
     $cursorOps = array_filter($policy["ops"], fn($p) =>
