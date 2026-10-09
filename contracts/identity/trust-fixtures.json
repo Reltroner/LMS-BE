@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "scope": "SYNTHETIC_AUTH_POLICY_MODEL_NOT_VERIFIED_JWT_SIGNATURES",
+  "oidc_cases": [
+    {
+      "id": "O01",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-user",
+      "aud": "lms-api",
+      "type": "access",
+      "caps": [
+        "learning.enrollment.read.self"
+      ],
+      "needed": "learning.enrollment.read.self",
+      "expected": 200
+    },
+    {
+      "id": "O02",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-admin",
+      "aud": "lms-api",
+      "type": "access",
+      "caps": [
+        "admin.audit.read"
+      ],
+      "needed": "admin.audit.read",
+      "expected": 200
+    },
+    {
+      "id": "O03",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-user",
+      "aud": "lms-api",
+      "type": "access",
+      "caps": [],
+      "needed": "learning.enrollment.read.self",
+      "expected": 403
+    },
+    {
+      "id": "O04",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-user",
+      "aud": "hrm-api",
+      "type": "access",
+      "caps": [
+        "learning.enrollment.read.self"
+      ],
+      "needed": "learning.enrollment.read.self",
+      "expected": 401
+    },
+    {
+      "id": "O05",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "unknown",
+      "aud": "lms-api",
+      "type": "access",
+      "caps": [
+        "learning.enrollment.read.self"
+      ],
+      "needed": "learning.enrollment.read.self",
+      "expected": 401
+    },
+    {
+      "id": "O06",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-user",
+      "aud": "lms-api",
+      "type": "id",
+      "caps": [
+        "learning.enrollment.read.self"
+      ],
+      "needed": "learning.enrollment.read.self",
+      "expected": 401
+    },
+    {
+      "id": "O07",
+      "signature_verified": false,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-user",
+      "aud": "lms-api",
+      "type": "access",
+      "caps": [
+        "learning.enrollment.read.self"
+      ],
+      "needed": "learning.enrollment.read.self",
+      "expected": 401
+    },
+    {
+      "id": "O08",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-user",
+      "aud": "lms-api",
+      "type": "access",
+      "caps": [
+        "student"
+      ],
+      "needed": "learning.enrollment.read.self",
+      "expected": 403
+    },
+    {
+      "id": "O09",
+      "signature_verified": true,
+      "issuer": "https://auth.reltroner.com/realms/reltroner",
+      "azp": "lms-admin",
+      "aud": "lms-api",
+      "type": "access",
+      "caps": [
+        "admin.principal.role.manage"
+      ],
+      "needed": "admin.principal.role.manage",
+      "expected": 200
+    }
+  ],
+  "workload_cases": [
+    {
+      "id": "W01",
+      "signature_verified": true,
+      "caller": "gateway",
+      "recipient": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "learning.enrollment.read.self"
+      ],
+      "request_id": "trace-a",
+      "fresh": true,
+      "replayed": false,
+      "key_authorized": true,
+      "expected": 200
+    },
+    {
+      "id": "W02",
+      "signature_verified": false,
+      "caller": "gateway",
+      "recipient": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "learning.enrollment.read.self"
+      ],
+      "request_id": "trace-a",
+      "fresh": true,
+      "replayed": false,
+      "key_authorized": true,
+      "expected": 401
+    },
+    {
+      "id": "W03",
+      "signature_verified": true,
+      "caller": "gateway",
+      "recipient": "audit",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "learning.enrollment.read.self"
+      ],
+      "request_id": "trace-a",
+      "fresh": true,
+      "replayed": false,
+      "key_authorized": true,
+      "expected": 403
+    },
+    {
+      "id": "W04",
+      "signature_verified": true,
+      "caller": "gateway",
+      "recipient": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "learning.enrollment.read.self"
+      ],
+      "request_id": "trace-a",
+      "fresh": true,
+      "replayed": true,
+      "key_authorized": true,
+      "expected": 401
+    },
+    {
+      "id": "W05",
+      "signature_verified": true,
+      "caller": "gateway",
+      "recipient": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "learning.enrollment.read.self"
+      ],
+      "request_id": "trace-a",
+      "fresh": false,
+      "replayed": false,
+      "key_authorized": true,
+      "expected": 401
+    },
+    {
+      "id": "W06",
+      "signature_verified": true,
+      "caller": "gateway",
+      "recipient": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "admin.audit.read"
+      ],
+      "request_id": "trace-a",
+      "fresh": true,
+      "replayed": false,
+      "key_authorized": true,
+      "expected": 403
+    },
+    {
+      "id": "W07",
+      "signature_verified": true,
+      "caller": "gateway",
+      "recipient": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "learning.enrollment.read.self"
+      ],
+      "request_id": "trace-a",
+      "fresh": true,
+      "replayed": false,
+      "key_authorized": false,
+      "expected": 401
+    },
+    {
+      "id": "W08",
+      "signature_verified": true,
+      "caller": "gateway",
+      "recipient": "learning",
+      "operation_id": "API-02",
+      "principal_sub": "synthetic-principal",
+      "delegated_capabilities": [
+        "learning.enrollment.read.self"
+      ],
+      "request_id": "",
+      "fresh": true,
+      "replayed": false,
+      "key_authorized": true,
+      "expected": 401
+    }
+  ],
+  "no_real_jwt": true,
+  "no_production_secrets": true
+}
