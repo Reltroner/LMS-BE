@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "record_id": "LMS-3B01-STATIC-REVIEW-20261009",
+  "date": "2026-10-09",
+  "phase": "3B-01",
+  "source_baseline": "e30a61780994d85671cbf079e6b9ce899b3fe837",
+  "source_branch": "phase3b/01-openapi-api-contracts-20261009",
+  "freeze_sha": "b9390a06ebc5db5377059a99109d59fea092cccb",
+  "inspection_method": "READ_ONLY_GITHUB_FILE_FETCH_PLUS_EXECUTED_INLINE_JS_ASSERTIONS_ON_JSON_ARTIFACTS",
+  "result": "PASS_19_OF_19_STATIC_INSPECTION_ONLY",
+  "observed_static_checks": [
+    "26 exact frozen method+path",
+    "22 paths and OpenAPI 3.1",
+    "19 exact capability registry",
+    "reserved capability unrouted",
+    "26 bearer-protected methods",
+    "per-operation metadata parity",
+    "all endpoints have 401+403+success responses",
+    "guest offerings denied by default",
+    "availability requires booking capability",
+    "booking Idempotency-Key required",
+    "pagination on variable collections",
+    "Problem Details required schema",
+    "Problem Details example statuses",
+    "all internal refs resolved",
+    "26 per-route response/error fixtures",
+    "9 synthetic positive authorization decisions",
+    "16 synthetic negative authorization decisions",
+    "PHP validator source contains literal $ref handling",
+    "10 future DTO acceptance gates explicit"
+  ],
+  "checks_passed": 19,
+  "checks_failed": 0,
+  "not_executed": [
+    "php -l contracts/tests/validate.php",
+    "php contracts/tests/validate.php",
+    "six-service Laravel PHPUnit and CI workflows",
+    "real HTTP provider/consumer tests",
+    "real Keycloak client/token acquisition",
+    "production readiness, DB migration, deployment"
+  ],
+  "exit_interpretation": {
+    "B3_AC01": "STATIC_ARTIFACT_REVIEW_PASS_PHP_TEST_PENDING",
+    "B3_AC02": "STATIC_ARTIFACT_REVIEW_PASS_GUEST_PUBLIC_AUTHORIZATION_PENDING",
+    "B3_AC03": "STATIC_ARTIFACT_REVIEW_PASS_PHP_TEST_PENDING",
+    "B3_AC04": "MODEL_MOCK_ASSERTIONS_PASS_REAL_PROVIDER_NOT_TESTED"
+  },
+  "owner_guest_public_policy": "NOT_ACCEPTED; CONTRACT_AUTH_REQUIRED_UNTIL_SEPARATE_APPROVAL",
+  "source_review_status": "CANDIDATE_PR_NOT_YET_MERGED_OR_RELEASED",
+  "production_mutation_authorized": false
+}
