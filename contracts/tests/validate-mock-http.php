@@ -21,13 +21,13 @@ function contractDecision(array $p,?array $identity,?string $targetOwner=null,bo
     if($p['id']==='API-17'&&!$aclAllowed)return 403;
     return 200;
 }
-function matchingPath(array $api,string $method,string $path):?array {
-    foreach($api['paths'] as $template=>$verbs) {
-        if(!isset($verbs[strtolower($method)]))continue;
-        $regex='#^'.preg_replace('/\\\\\{[^}]+\\\\\}/','[^/]+',preg_quote($template,'#')).'$#';
-        if(preg_match($regex,$path))return $verbs[strtolower($method)];
-    }
-    return null;
+function completeOperation(array $operation,array $policy):bool {
+ return ($operation['x-lms-operation-id']??null)===$policy['id'] &&
+        ($operation['x-lms-domain-owner']??null)===$policy['owner'] &&
+        ($operation['x-lms-capability']??null)===$policy['capability'] &&
+        ($operation['x-lms-browser-client']??null)===$policy['client'] &&
+        ($operation['security']??null)===[['LmsBearer'=>[]]] &&
+        isset($operation['responses']['401'],$operation['responses']['403']);
 }
 $ops=array_column($policy['ops'],null,'id');
 checkMock(count($ops)===26 && count($fx['operation_contract_cases']??[])===26,'B3-AC04 26 source-owned mock operation fixtures');
@@ -39,6 +39,7 @@ foreach($fx['operation_contract_cases'] as $row){
     $owner=$p['actor_binding']==='SIGNED_SUB_AND_RESOURCE_OWNER'?'subject-a':null;
     $allowed=contractDecision($p,$identity,$owner);
     $successCodes=array_filter(array_keys($op['responses']??[]),fn($n)=>(int)$n>=200&&(int)$n<300);
+    checkMock(completeOperation($op,$p),'B3-AC04 metadata and bearer mock '+$p['id']);
     checkMock($allowed===200&&count($successCodes)>0&&in_array($row['success_status'],array_map('intval',$successCodes),true),'B3-AC04 positive mock '.$p['id']);
     checkMock(contractDecision($p,null,$owner)===401 && isset($op['responses']['401']),'B3-AC22 anonymous mock '.$p['id']);
     if($p['capability']!==null){
@@ -55,8 +56,13 @@ foreach($fx['operation_contract_cases'] as $row){
 }
 checkMock(contractDecision($ops['API-17'],['signature_verified'=>true,'azp'=>'lms-user','sub'=>'subject-a','caps'=>['knowledge.search']],null,false)===403,'B3-AC22 denied private search snippet');
 checkMock(contractDecision($ops['API-02'],['signature_verified'=>false,'azp'=>'lms-user','sub'=>'subject-a','caps'=>['learning.enrollment.read.self']],'subject-a')===401,'B3-AC22 unsigned principal delegation');
-$broken=$api['paths']['/api/v1/me']['get'];unset($broken['responses']['401']);
-checkMock(!isset($broken['responses']['401']),'B3-AC19 intentionally malformed 401 response detected');
+$baseOperation=$api['paths']['/api/v1/me']['get'];
+$broken=$baseOperation;unset($broken['responses']['401']);
+checkMock(!completeOperation($broken,$ops['API-01']),'B3-AC19 missing 401 mutation rejected');
+$broken=$baseOperation;$broken['x-lms-domain-owner']='assistant';
+checkMock(!completeOperation($broken,$ops['API-01']),'B3-AC19 wrong owner mutation rejected');
+$broken=$baseOperation;$broken['security']=[];
+checkMock(!completeOperation($broken,$ops['API-01']),'B3-AC19 missing bearer mutation rejected');
 $schema=$api['components']['schemas']['ProblemDetails'];
 $required=$schema['required'];
 checkMock(count(array_diff(['type','title','status','detail','code','request_id'],$required))===0,'B3-AC03 RFC7807 fields present');
