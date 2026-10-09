@@ -201,13 +201,14 @@
       "path": "/api/v1/mentorship/offerings",
       "owner": "mentorship",
       "capability": "mentorship.offering.read",
-      "client": "PENDING_PUBLIC_PROJECTION_POLICY",
+      "client": "lms-user",
       "rule": "Optional guest-safe offering view, policy required",
       "contract_status": "FROZEN_RESOURCE_FAMILY_IMPL_PENDING",
       "authentication": "REQUIRED_BEARER_ACCESS_TOKEN",
       "guest_policy": "GUEST_DENIED_PENDING_OWNER_PUBLIC_PROJECTION_POLICY",
       "actor_binding": "AUTHZ_CAPABILITY",
-      "public_state": "CONTRACT_CANDIDATE_NOT_RUNTIME"
+      "public_state": "CONTRACT_CANDIDATE_NOT_RUNTIME",
+      "original_fz10_client_policy": "PENDING_PUBLIC_PROJECTION_POLICY"
     },
     {
       "id": "API-11",
@@ -215,13 +216,14 @@
       "path": "/api/v1/mentorship/offerings/{offering_id}",
       "owner": "mentorship",
       "capability": "mentorship.offering.read",
-      "client": "PENDING_PUBLIC_PROJECTION_POLICY",
+      "client": "lms-user",
       "rule": "No private mentor attributes for guest",
       "contract_status": "FROZEN_RESOURCE_FAMILY_IMPL_PENDING",
       "authentication": "REQUIRED_BEARER_ACCESS_TOKEN",
       "guest_policy": "GUEST_DENIED_PENDING_OWNER_PUBLIC_PROJECTION_POLICY",
       "actor_binding": "AUTHZ_CAPABILITY",
-      "public_state": "CONTRACT_CANDIDATE_NOT_RUNTIME"
+      "public_state": "CONTRACT_CANDIDATE_NOT_RUNTIME",
+      "original_fz10_client_policy": "PENDING_PUBLIC_PROJECTION_POLICY"
     },
     {
       "id": "API-12",
