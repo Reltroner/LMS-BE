@@ -1,0 +1,2674 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Reltroner LMS — Frozen Public API v1 Contract Candidate",
+    "version": "1.0.0-contract-candidate",
+    "description": "Phase 3B-01 CONTRACT-ONLY artifact. Precisely 26 frozen public resource operations; field-level DTOs are proposals, not live providers. Runtime Keycloak/HTTP endpoints, real tokens and business handlers are Phase 4+ and NOT certified. Binding docs: progress-documentation Phase 0C/1 FROZEN, FZ-10, FZ-11."
+  },
+  "servers": [
+    {
+      "url": "https://lms-api.reltroner.com",
+      "description": "Contracted public Gateway hostname; this file does not prove deployed ingress."
+    }
+  ],
+  "tags": [
+    {
+      "name": "gateway"
+    },
+    {
+      "name": "learning"
+    },
+    {
+      "name": "mentorship"
+    },
+    {
+      "name": "knowledge"
+    },
+    {
+      "name": "assistant"
+    },
+    {
+      "name": "audit"
+    }
+  ],
+  "security": [
+    {
+      "LmsBearer": []
+    }
+  ],
+  "paths": {
+    "/api/v1/me": {
+      "get": {
+        "tags": [
+          "gateway"
+        ],
+        "operationId": "API-01_get",
+        "summary": "API-01: GET /api/v1/me",
+        "description": "Safe principal projection only",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-01",
+        "x-lms-domain-owner": "gateway",
+        "x-lms-capability": null,
+        "x-lms-browser-client": "any_valid_lms_client",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Principal"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/learning/enrollments": {
+      "get": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-02_get",
+        "summary": "API-02: GET /api/v1/learning/enrollments",
+        "description": "Scoped to authenticated sub",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-02",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.enrollment.read.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Enrollment"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-03_post",
+        "summary": "API-03: POST /api/v1/learning/enrollments",
+        "description": "Version-pinned course enrollment",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-03",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.enrollment.create.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enrollment"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Schema candidate; may need separate Phase 5/6/7/9 owner-approved DTO revision.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollmentCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/learning/enrollments/{enrollment_id}": {
+      "get": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-04_get",
+        "summary": "API-04: GET /api/v1/learning/enrollments/{enrollment_id}",
+        "description": "Ownership by signed sub",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-04",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.enrollment.read.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/enrollment_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enrollment"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/learning/courses/{course_id}/progress": {
+      "get": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-05_get",
+        "summary": "API-05: GET /api/v1/learning/courses/{course_id}/progress",
+        "description": "Current accepted curriculum revision",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-05",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.progress.read.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Progress"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/learning/courses/{course_id}/lessons/{lesson_id}/progress": {
+      "put": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-06_put",
+        "summary": "API-06: PUT /api/v1/learning/courses/{course_id}/lessons/{lesson_id}/progress",
+        "description": "Stable lesson IDs; enrollment server resolved",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-06",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.progress.write.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_id"
+          },
+          {
+            "$ref": "#/components/parameters/lesson_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Progress"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Schema candidate; may need separate Phase 5/6/7/9 owner-approved DTO revision.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressUpdate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/learning/bookmarks": {
+      "get": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-07_get",
+        "summary": "API-07: GET /api/v1/learning/bookmarks",
+        "description": "Owner only",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-07",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.bookmark.read.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Bookmark"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/learning/bookmarks/{content_id}": {
+      "put": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-08_put",
+        "summary": "API-08: PUT /api/v1/learning/bookmarks/{content_id}",
+        "description": "Idempotent bookmark",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-08",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.bookmark.write.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/content_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bookmark"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "learning"
+        ],
+        "operationId": "API-09_delete",
+        "summary": "API-09: DELETE /api/v1/learning/bookmarks/{content_id}",
+        "description": "Owned bookmark only",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-09",
+        "x-lms-domain-owner": "learning",
+        "x-lms-capability": "learning.bookmark.write.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/content_id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/mentorship/offerings": {
+      "get": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-10_get",
+        "summary": "API-10: GET /api/v1/mentorship/offerings",
+        "description": "Optional guest-safe offering view, policy required",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-10",
+        "x-lms-domain-owner": "mentorship",
+        "x-lms-capability": "mentorship.offering.read",
+        "x-lms-browser-client": "PENDING_PUBLIC_PROJECTION_POLICY",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "GUEST_DENIED_PENDING_OWNER_PUBLIC_PROJECTION_POLICY",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Offering"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/mentorship/offerings/{offering_id}": {
+      "get": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-11_get",
+        "summary": "API-11: GET /api/v1/mentorship/offerings/{offering_id}",
+        "description": "No private mentor attributes for guest",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-11",
+        "x-lms-domain-owner": "mentorship",
+        "x-lms-capability": "mentorship.offering.read",
+        "x-lms-browser-client": "PENDING_PUBLIC_PROJECTION_POLICY",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "GUEST_DENIED_PENDING_OWNER_PUBLIC_PROJECTION_POLICY",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offering_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Offering"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/mentorship/availability": {
+      "get": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-12_get",
+        "summary": "API-12: GET /api/v1/mentorship/availability",
+        "description": "Owner approved booking-oriented availability; no anonymous exposure",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-12",
+        "x-lms-domain-owner": "mentorship",
+        "x-lms-capability": "mentorship.booking.create.self",
+        "x-lms-browser-client": "authenticated_lms_user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AvailabilitySlot"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/mentorship/bookings": {
+      "get": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-13_get",
+        "summary": "API-13: GET /api/v1/mentorship/bookings",
+        "description": "Bookings for signed sub only",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-13",
+        "x-lms-domain-owner": "mentorship",
+        "x-lms-capability": "mentorship.booking.read.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Booking"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-14_post",
+        "summary": "API-14: POST /api/v1/mentorship/bookings",
+        "description": "Durable idempotency and occupancy uniqueness",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-14",
+        "x-lms-domain-owner": "mentorship",
+        "x-lms-capability": "mentorship.booking.create.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Schema candidate; may need separate Phase 5/6/7/9 owner-approved DTO revision.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mentorship/bookings/{booking_id}": {
+      "get": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-15_get",
+        "summary": "API-15: GET /api/v1/mentorship/bookings/{booking_id}",
+        "description": "Object authorization",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-15",
+        "x-lms-domain-owner": "mentorship",
+        "x-lms-capability": "mentorship.booking.read.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/booking_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/mentorship/bookings/{booking_id}/cancel": {
+      "post": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-16_post",
+        "summary": "API-16: POST /api/v1/mentorship/bookings/{booking_id}/cancel",
+        "description": "Cancellation lifecycle and replay",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-16",
+        "x-lms-domain-owner": "mentorship",
+        "x-lms-capability": "mentorship.booking.cancel.self",
+        "x-lms-browser-client": "lms-user",
+        "x-lms-owner-binding": "SIGNED_SUB_AND_RESOURCE_OWNER",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/booking_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/knowledge/search": {
+      "get": {
+        "tags": [
+          "knowledge"
+        ],
+        "operationId": "API-17_get",
+        "summary": "API-17: GET /api/v1/knowledge/search",
+        "description": "ACL checked in Knowledge",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-17",
+        "x-lms-domain-owner": "knowledge",
+        "x-lms-capability": "knowledge.search",
+        "x-lms-browser-client": "authenticated_lms_client",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/SearchQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SearchHit"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/assistant/query": {
+      "post": {
+        "tags": [
+          "assistant"
+        ],
+        "operationId": "API-18_post",
+        "summary": "API-18: POST /api/v1/assistant/query",
+        "description": "No direct state mutation",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-18",
+        "x-lms-domain-owner": "assistant",
+        "x-lms-capability": "assistant.use",
+        "x-lms-browser-client": "authenticated_lms_client",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantAnswer"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Schema candidate; may need separate Phase 5/6/7/9 owner-approved DTO revision.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistantQuery"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/principals": {
+      "get": {
+        "tags": [
+          "gateway"
+        ],
+        "operationId": "API-19_get",
+        "summary": "API-19: GET /api/v1/admin/principals",
+        "description": "Restricted Keycloak projection",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-19",
+        "x-lms-domain-owner": "gateway+audit",
+        "x-lms-capability": "admin.principal.read",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminPrincipal"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/principals/{principal_id}": {
+      "get": {
+        "tags": [
+          "gateway"
+        ],
+        "operationId": "API-20_get",
+        "summary": "API-20: GET /api/v1/admin/principals/{principal_id}",
+        "description": "Privileged principal projection",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-20",
+        "x-lms-domain-owner": "gateway+audit",
+        "x-lms-capability": "admin.principal.read",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/principal_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPrincipal"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/principals/{principal_id}/roles": {
+      "patch": {
+        "tags": [
+          "gateway"
+        ],
+        "operationId": "API-21_patch",
+        "summary": "API-21: PATCH /api/v1/admin/principals/{principal_id}/roles",
+        "description": "Durable audit intent and reconciliation",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-21",
+        "x-lms-domain-owner": "gateway+audit",
+        "x-lms-capability": "admin.principal.role.manage",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/principal_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPrincipal"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Schema candidate; may need separate Phase 5/6/7/9 owner-approved DTO revision.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrincipalRolePatch"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/mentorship/bookings": {
+      "get": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-22_get",
+        "summary": "API-22: GET /api/v1/admin/mentorship/bookings",
+        "description": "Admin plane only",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-22",
+        "x-lms-domain-owner": "mentorship+audit",
+        "x-lms-capability": "admin.mentorship.read",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Booking"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/mentorship/bookings/{booking_id}": {
+      "get": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-23_get",
+        "summary": "API-23: GET /api/v1/admin/mentorship/bookings/{booking_id}",
+        "description": "Admin plane only",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-23",
+        "x-lms-domain-owner": "mentorship+audit",
+        "x-lms-capability": "admin.mentorship.read",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/booking_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "mentorship"
+        ],
+        "operationId": "API-24_patch",
+        "summary": "API-24: PATCH /api/v1/admin/mentorship/bookings/{booking_id}",
+        "description": "Audit privileged edit",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-24",
+        "x-lms-domain-owner": "mentorship+audit",
+        "x-lms-capability": "admin.mentorship.manage",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/booking_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Schema candidate; may need separate Phase 5/6/7/9 owner-approved DTO revision.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminBookingPatch"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/audit-events": {
+      "get": {
+        "tags": [
+          "audit"
+        ],
+        "operationId": "API-25_get",
+        "summary": "API-25: GET /api/v1/admin/audit-events",
+        "description": "Audit readonly, bounded pagination",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-25",
+        "x-lms-domain-owner": "audit",
+        "x-lms-capability": "admin.audit.read",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CursorCollection"
+                    }
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AuditEvent"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/audit-events/{audit_event_id}": {
+      "get": {
+        "tags": [
+          "audit"
+        ],
+        "operationId": "API-26_get",
+        "summary": "API-26: GET /api/v1/admin/audit-events/{audit_event_id}",
+        "description": "Audit readonly",
+        "security": [
+          {
+            "LmsBearer": []
+          }
+        ],
+        "x-lms-operation-id": "API-26",
+        "x-lms-domain-owner": "audit",
+        "x-lms-capability": "admin.audit.read",
+        "x-lms-browser-client": "lms-admin",
+        "x-lms-owner-binding": "AUTHZ_CAPABILITY",
+        "x-lms-guest-policy": "NO_GUEST_ACCESS",
+        "x-lms-proposed-dto": true,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/audit_event_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; representation remains DTO candidate until domain-provider acceptance.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditEvent"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerFailure"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "LmsBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "OIDC access tokens from https://auth.reltroner.com/realms/reltroner, aud=lms-api, client lms-user/lms-admin, explicit API capability; never accept ID token."
+      }
+    },
+    "parameters": {
+      "Cursor": {
+        "name": "cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque pagination cursor; bounded reads only.",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Bounded page size, exact cap remains provider candidate.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        }
+      },
+      "SearchQuery": {
+        "name": "q",
+        "in": "query",
+        "required": true,
+        "description": "Authenticated permission-aware search query.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "description": "Opaque durable booking replay key. TTL/hash/error details are a hard gate before Phase 7 implementation.",
+        "schema": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 255
+        }
+      },
+      "enrollment_id": {
+        "name": "enrollment_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      },
+      "course_id": {
+        "name": "course_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      },
+      "lesson_id": {
+        "name": "lesson_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      },
+      "content_id": {
+        "name": "content_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      },
+      "offering_id": {
+        "name": "offering_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      },
+      "booking_id": {
+        "name": "booking_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      },
+      "principal_id": {
+        "name": "principal_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      },
+      "audit_event_id": {
+        "name": "audit_event_id",
+        "in": "path",
+        "required": true,
+        "description": "Opaque domain-owned identifier.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque API identifier; clients must not infer database topology."
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Valid bearer access token required.",
+        "headers": {
+          "X-Request-ID": {
+            "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            },
+            "examples": {
+              "unauthorized": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "A valid access token is required.",
+                  "code": "UNAUTHORIZED",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "forbidden": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "The required capability or resource ownership is missing.",
+                  "code": "FORBIDDEN",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "conflict": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Conflict",
+                  "status": 409,
+                  "detail": "The requested state transition conflicts with the current resource state.",
+                  "code": "DOMAIN_CONFLICT",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Required capability, client context or object owner absent.",
+        "headers": {
+          "X-Request-ID": {
+            "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            },
+            "examples": {
+              "unauthorized": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "A valid access token is required.",
+                  "code": "UNAUTHORIZED",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "forbidden": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "The required capability or resource ownership is missing.",
+                  "code": "FORBIDDEN",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "conflict": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Conflict",
+                  "status": 409,
+                  "detail": "The requested state transition conflicts with the current resource state.",
+                  "code": "DOMAIN_CONFLICT",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found or inaccessible.",
+        "headers": {
+          "X-Request-ID": {
+            "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            },
+            "examples": {
+              "unauthorized": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "A valid access token is required.",
+                  "code": "UNAUTHORIZED",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "forbidden": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "The required capability or resource ownership is missing.",
+                  "code": "FORBIDDEN",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "conflict": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Conflict",
+                  "status": 409,
+                  "detail": "The requested state transition conflicts with the current resource state.",
+                  "code": "DOMAIN_CONFLICT",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflicting resource state or durable replay mismatch.",
+        "headers": {
+          "X-Request-ID": {
+            "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            },
+            "examples": {
+              "unauthorized": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "A valid access token is required.",
+                  "code": "UNAUTHORIZED",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "forbidden": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "The required capability or resource ownership is missing.",
+                  "code": "FORBIDDEN",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "conflict": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Conflict",
+                  "status": 409,
+                  "detail": "The requested state transition conflicts with the current resource state.",
+                  "code": "DOMAIN_CONFLICT",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvalidRequest": {
+        "description": "Invalid JSON request semantics.",
+        "headers": {
+          "X-Request-ID": {
+            "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            },
+            "examples": {
+              "unauthorized": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "A valid access token is required.",
+                  "code": "UNAUTHORIZED",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "forbidden": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "The required capability or resource ownership is missing.",
+                  "code": "FORBIDDEN",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "conflict": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Conflict",
+                  "status": 409,
+                  "detail": "The requested state transition conflicts with the current resource state.",
+                  "code": "DOMAIN_CONFLICT",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ServerFailure": {
+        "description": "Server failure; secrets and internal details hidden.",
+        "headers": {
+          "X-Request-ID": {
+            "description": "Request correlation ID after trusted input validation or generation by Gateway.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            },
+            "examples": {
+              "unauthorized": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "A valid access token is required.",
+                  "code": "UNAUTHORIZED",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "forbidden": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "The required capability or resource ownership is missing.",
+                  "code": "FORBIDDEN",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              },
+              "conflict": {
+                "value": {
+                  "type": "about:blank",
+                  "title": "Conflict",
+                  "status": 409,
+                  "detail": "The requested state transition conflicts with the current resource state.",
+                  "code": "DOMAIN_CONFLICT",
+                  "request_id": "018f5d85-7b3a-7c4e-8f7d-123456789abc"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Principal": {
+        "type": "object",
+        "description": "3B-01 candidate representation of authenticated LMS-safe principal projection; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "sub": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "sub",
+          "capabilities"
+        ],
+        "additionalProperties": true
+      },
+      "Enrollment": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Learning-owned enrollment; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "course_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "curriculum_revision": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "id",
+          "course_id"
+        ],
+        "additionalProperties": true
+      },
+      "Progress": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Learning-owned course progress; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "course_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "curriculum_revision": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "course_id"
+        ],
+        "additionalProperties": true
+      },
+      "Bookmark": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Learning-owned bookmark; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "content_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "content_id"
+        ],
+        "additionalProperties": true
+      },
+      "Offering": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Mentorship-owned offering; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": true
+      },
+      "AvailabilitySlot": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Mentorship availability slot; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "slot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "offering_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "slot_id",
+          "offering_id"
+        ],
+        "additionalProperties": true
+      },
+      "Booking": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Mentorship-owned booking; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "offering_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": true
+      },
+      "SearchHit": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Knowledge-owned authorized search hit; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "title": {
+            "type": "string"
+          },
+          "source_release": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": true
+      },
+      "AssistantAnswer": {
+        "type": "object",
+        "description": "3B-01 candidate representation of bounded Assistant response; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "answer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "additionalProperties": true
+      },
+      "AdminPrincipal": {
+        "type": "object",
+        "description": "3B-01 candidate representation of Keycloak-derived admin principal projection; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "sub": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "sub"
+        ],
+        "additionalProperties": true
+      },
+      "AuditEvent": {
+        "type": "object",
+        "description": "3B-01 candidate representation of append-only administrative audit event; domain-owned DTO details require later versioned provider contract acceptance.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": true
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "description": "RFC 7807 compatible error; implementation must not disclose traces, SQL, internal paths or secrets.",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail",
+          "code",
+          "request_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          },
+          "detail": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageInfo": {
+        "type": "object",
+        "required": [
+          "next_cursor"
+        ],
+        "properties": {
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CursorCollection": {
+        "type": "object",
+        "required": [
+          "data",
+          "page"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {}
+          },
+          "page": {
+            "$ref": "#/components/schemas/PageInfo"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bounded collection; consumer must not assume total count."
+      },
+      "EnrollmentCreate": {
+        "type": "object",
+        "required": [
+          "course_id"
+        ],
+        "properties": {
+          "course_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "additionalProperties": true,
+        "description": "Draft Learning creation DTO; course revision binding resolved and checked by Learning."
+      },
+      "ProgressUpdate": {
+        "type": "object",
+        "minProperties": 1,
+        "additionalProperties": true,
+        "description": "Candidate body; exact progress fields/lifecycle deferred to Phase 5. Only course/enrollment signed-sub state may change."
+      },
+      "BookingCreate": {
+        "type": "object",
+        "required": [
+          "offering_id"
+        ],
+        "properties": {
+          "offering_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          },
+          "slot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque API identifier; clients must not infer database topology."
+          }
+        },
+        "additionalProperties": true,
+        "description": "Candidate booking DTO; durable slot occupancy/idempotency semantics deferred to Phase 7."
+      },
+      "AssistantQuery": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "PrincipalRolePatch": {
+        "type": "object",
+        "required": [
+          "roles"
+        ],
+        "properties": {
+          "roles": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "description": "Candidate allowlisted LMS role patch. Keycloak adapter + durable Audit intent/reconciliation required, not implemented in Phase 3B-01."
+      },
+      "AdminBookingPatch": {
+        "type": "object",
+        "minProperties": 1,
+        "additionalProperties": true,
+        "description": "Candidate restricted admin booking lifecycle command; Phase 7 will finalize state model."
+      },
+      "ProblemExample": {
+        "description": "ERROR example candidate, not runtime evidence",
+        "type": "object"
+      }
+    }
+  },
+  "x-lms-authority": {
+    "freeze": "b9390a06ebc5db5377059a99109d59fea092cccb",
+    "logical_contract_blob": "cf089b8df4b5ccb1761b504ffae662a0053bf03e",
+    "work_package": "3B-01",
+    "domain_fields_binding": "PROVISIONAL_CANDIDATE_NOT_FROZEN",
+    "authn": "ALL_26_AUTHENTICATED_FAIL_CLOSED",
+    "guest_offer_policy": "GUEST_DENIED_PENDING_SEPARATE_OWNER_APPROVAL",
+    "capabilities_approved": [
+      "learning.enrollment.read.self",
+      "learning.enrollment.create.self",
+      "learning.progress.read.self",
+      "learning.progress.write.self",
+      "learning.bookmark.read.self",
+      "learning.bookmark.write.self",
+      "mentorship.offering.read",
+      "mentorship.booking.read.self",
+      "mentorship.booking.create.self",
+      "mentorship.booking.cancel.self",
+      "knowledge.search",
+      "assistant.use",
+      "admin.principal.read",
+      "admin.principal.role.manage",
+      "admin.mentorship.read",
+      "admin.mentorship.manage",
+      "admin.learning.read",
+      "admin.learning.override",
+      "admin.audit.read"
+    ],
+    "reserved_unrouted": [
+      "admin.learning.read",
+      "admin.learning.override"
+    ]
+  }
+}
