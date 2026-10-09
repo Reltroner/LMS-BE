@@ -1,0 +1,5 @@
+# Phase 3B-06 — Compatibility & Negative Contract Models
+
+This consumer/provider **contract-only fixture harness** checks exact frozen `/api/v1` method/paths, 19 capability names, nine event types, provider/consumer contract drift rejection, unauthorized admin and principal ownership scenarios, private snippets, event duplicate/stale replay, index rollback, and source-right attestation failures. It reads snapshots from 3B-01/02/03; no live Laravel provider, Redis broker, JWT signing, Keycloak, PostgreSQL or Knowledge index is started.
+
+Run `php -l contracts/tests/validate-compatibility.php` and `php contracts/tests/validate-compatibility.php` on the isolated Phase3B cumulative backend SHA. Several negatives are **pure policy model expectations** not an actual HTTP transport denial; real provider fixtures and wire compatibility remain later phases. Claims of B3-AC21..24 must stay **MODEL-LEVEL only** until CI and real provider tests execute. Later Phase 3B-07 accepts only appropriate scoped evidence and explicit deferrals.
