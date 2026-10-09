@@ -66,5 +66,31 @@ checkMock(!completeOperation($broken,$ops['API-01']),'B3-AC19 missing bearer mut
 $schema=$api['components']['schemas']['ProblemDetails'];
 $required=$schema['required'];
 checkMock(count(array_diff(['type','title','status','detail','code','request_id'],$required))===0,'B3-AC03 RFC7807 fields present');
+/** Pure JSON-schema compatibility delta model; NOT real HTTP provider schema conformance. */
+function compatibleSchema(array $old,array $new,string $direction):bool {
+ if(($old['type']??null)!==($new['type']??null))return false;
+ $a=$old['properties']??[];$b=$new['properties']??[];
+ foreach($a as $name=>$property) {
+  if(!isset($b[$name]))return false;
+  if(($property['type']??null)!==($b[$name]['type']??null))return false;
+ }
+ $oldRequired=$old['required']??[];$newRequired=$new['required']??[];
+ if($direction==='response')return count(array_diff($oldRequired,$newRequired))===0;
+ if($direction==='request')return count(array_diff($newRequired,$oldRequired))===0;
+ return false;
+}
+$principal=$api['components']['schemas']['Principal'];
+$enrollmentCreate=$api['components']['schemas']['EnrollmentCreate'];
+$addOptional=$principal;$addOptional['properties']['non_breaking_extra']=['type'=>'string'];
+checkMock(compatibleSchema($principal,$addOptional,'response'),'B3-AC21 additive optional response field compatible');
+$removeRequired=$principal;$removeRequired['required']=['sub'];
+checkMock(!compatibleSchema($principal,$removeRequired,'response'),'B3-AC21 removal of guaranteed response required field rejected');
+$wrongType=$principal;$wrongType['properties']['sub']['type']='integer';
+checkMock(!compatibleSchema($principal,$wrongType,'response'),'B3-AC21 response property type mutation rejected');
+$newRequestRequired=$enrollmentCreate;$newRequestRequired['properties']['new_flag']=['type'=>'string'];
+$newRequestRequired['required'][]='new_flag';
+checkMock(!compatibleSchema($enrollmentCreate,$newRequestRequired,'request'),'B3-AC21 new mandatory request field rejected');
+$addedOptionalRequest=$enrollmentCreate;$addedOptionalRequest['properties']['new_flag']=['type'=>'string'];
+checkMock(compatibleSchema($enrollmentCreate,$addedOptionalRequest,'request'),'B3-AC21 additive optional request field compatible');
 echo "3B07R CONTRACT MOCK: $passed PASS / ".count($failed)." FAIL\n";
 exit($failed?1:0);
