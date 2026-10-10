@@ -107,14 +107,65 @@
       "deny unsigned X-User-Id headers"
     ],
     "cryptographic_parameters": {
-      "algorithm": "PENDING_SECURITY_ADR",
-      "JWKS_or_key_distribution": "PENDING_SECURITY_ADR",
-      "rotation_window": "PENDING_SECURITY_ADR",
-      "clock_skew_seconds": "PENDING_SECURITY_ADR",
-      "assertion_max_ttl_seconds": "PENDING_SECURITY_ADR",
-      "nonce_storage": "PENDING_SECURITY_ADR"
+      "design_status": "OWNER_RATIFIED_NONPRODUCTION_DESIGN_RUNTIME_NOT_AUTHORIZED",
+      "ratified_adr": "ADR-LMS-TRUST-001",
+      "runtime_authorized": false,
+      "requires_owner_approval_before_runtime": true,
+      "algorithm": "EdDSA",
+      "curve": "Ed25519",
+      "serialization": "JWS_COMPACT_RFC7515_RFC8037",
+      "protected_header": {
+        "alg": "EdDSA",
+        "kid_lookup": "TRUSTED_PINNED_REGISTRY_ONLY",
+        "kid_matches_payload": true
+      },
+      "JWKS_or_key_distribution": {
+        "mode": "PINNED_PER_SERVICE_PUBLIC_KEYS",
+        "public_key_type": "OKP",
+        "public_key_curve": "Ed25519",
+        "caller_to_kid_binding": true,
+        "fingerprint_review_required": true,
+        "token_header_key_urls_allowed": false,
+        "private_keys_in_source": false
+      },
+      "rotation_window": {
+        "overlap_seconds": 180,
+        "allowed_keys": "CURRENT_AND_PREVIOUS_ONLY",
+        "compromised_key_revoked_immediately": true
+      },
+      "clock_skew_seconds": 5,
+      "assertion_max_ttl_seconds": 60,
+      "nonce_storage": {
+        "mode": "ATOMIC_SINGLE_USE",
+        "identity_fields": [
+          "iss",
+          "caller_service",
+          "recipient_service",
+          "jti"
+        ],
+        "jti_min_entropy_bits": 128,
+        "reserve_before_side_effects": true,
+        "ttl": "REMAINING_EXP_PLUS_ALLOWED_SKEW",
+        "store": "REDIS_EPHEMERAL_SET_NX_PX_EQUIVALENT_DESIGN_ONLY",
+        "on_store_unavailable": "DENY",
+        "on_indeterminate_result": "DENY",
+        "keyspace_loss_detection_required": true,
+        "recovery_quarantine_seconds": 65,
+        "quarantine_starts_after": "VERIFIED_RECOVERY"
+      },
+      "authorization_binding": [
+        "issuer",
+        "audience",
+        "caller_service",
+        "recipient_service",
+        "operation_id",
+        "principal_sub",
+        "principal_capabilities_intersection",
+        "request_id"
+      ],
+      "fail_closed": true
     },
-    "not_approved_until": "cryptographic selection with positive/negative real-signature fixtures signed by owner"
+    "not_approved_until": "Future isolated real-signature HTTP integration with independently validated dual assertions and Redis-loss detection/quarantine; signing-key custody and pinned public-key registry review; independent owner approval before live runtime. Synthetic fixtures do not authorize runtime."
   },
   "owner_boundary": {
     "HRM_realm_mappers_touched": false,
