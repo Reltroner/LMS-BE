@@ -63,6 +63,25 @@ $nonce=[];
 at(decision($valid,['untrusted-kid'=>$public],'gateway','learning',$now,$nonce,$profile)===401,'B3-AC07 unknown trusted key ID denied');
 $nonce=[];$tampered=substr($valid,0,-1).(substr($valid,-1)==='A'?'B':'A');
 at(decision($tampered,$trusted,'gateway','learning',$now,$nonce,$profile)===401,'B3-AC07 altered detached signature rejected');
-at($profile['status']==='CANDIDATE_NOT_OWNER_RATIFIED_SECURITY_ADR'&&$profile['requires_owner_approval_before_runtime']===true,'B3-AC07 no silent crypto ADR ratification');
+/** Source-status acceptance only; the signed fixtures above are a single combined test assertion. */
+function acceptsCryptoDesign(array $candidate):bool{
+ return ($candidate['status']??null)==='OWNER_RATIFIED_NONPRODUCTION_DESIGN_RUNTIME_NOT_AUTHORIZED'&&
+ ($candidate['ratified_adr']??null)==='ADR-LMS-TRUST-001'&&
+ ($candidate['requires_owner_approval_before_runtime']??null)===true&&
+ ($candidate['runtime_authorized']??null)===false&&($candidate['not_a_live_keycloak_token']??null)===true;
+}
+at(acceptsCryptoDesign($profile),'B3-AC07 owner-ratified DESIGN with live runtime still unauthorized');
+at($profile['algorithm']==='EdDSA'&&$profile['curve']==='Ed25519'&&$profile['serialization']==='JWS Compact RFC7515 with EdDSA RFC8037','B3-AC07 ratified internal signing profile');
+at($profile['max_ttl_seconds']===60&&$profile['clock_skew_seconds']===5&&$profile['rotation_overlap_seconds']===180&&($profile['replay_recovery_quarantine_seconds']??null)===65,'B3-AC07 ratified numeric freshness rotation and recovery bounds');
+at($profile['phase']==='3B-07R'&&$profile['key_generation']==='Synthetic deterministic public non-secret test seed ONLY; production private keys never stored in repo','B3-AC07 historical profile and public synthetic seed remain test-only');
+at($profile['required_claims']===['iss','sub','aud','iat','nbf','exp','jti','kid','caller_service','recipient_service','operation_id','principal_sub','principal_capabilities','request_id'],'B3-AC07 required signed claims preserved');
+$mutant=$profile;$mutant['status']='CANDIDATE_NOT_OWNER_RATIFIED_SECURITY_ADR';
+at(!acceptsCryptoDesign($mutant),'B3-AC07 stale unratified source status rejected');
+$mutant=$profile;$mutant['requires_owner_approval_before_runtime']=false;
+at(!acceptsCryptoDesign($mutant),'B3-AC07 bypassed runtime owner approval rejected');
+$mutant=$profile;$mutant['runtime_authorized']=true;
+at(!acceptsCryptoDesign($mutant),'B3-AC07 design ratification cannot authorize runtime');
+$mutant=$profile;$mutant['not_a_live_keycloak_token']=false;
+at(!acceptsCryptoDesign($mutant),'B3-AC07 profile cannot claim a live Keycloak token');
 echo "3B07R SIGNED TRUST MODEL: $passed PASS / ".count($failed)." FAIL\n";
 exit($failed?1:0);

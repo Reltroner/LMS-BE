@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
-  "status": "CANDIDATE_NOT_OWNER_RATIFIED_SECURITY_ADR",
+  "status": "OWNER_RATIFIED_NONPRODUCTION_DESIGN_RUNTIME_NOT_AUTHORIZED",
+  "ratified_adr": "ADR-LMS-TRUST-001",
+  "runtime_authorized": false,
   "phase": "3B-07R",
   "purpose": "Test-only contract profile for signed scoped internal workload and delegated principal assertions",
   "algorithm": "EdDSA",
@@ -9,6 +11,7 @@
   "max_ttl_seconds": 60,
   "clock_skew_seconds": 5,
   "rotation_overlap_seconds": 180,
+  "replay_recovery_quarantine_seconds": 65,
   "key_distribution": "Pinned per-service trusted public Ed25519 keys with explicit kid caller binding; production key lifecycle requires separate ADR",
   "nonce_store": "Atomic one-time jti+caller+recipient, TTL at least expiry+skew; deny when replay storage unavailable; later load/persistence proof",
   "required_claims": [
